@@ -1,7 +1,8 @@
 /* ============================================================
-   Note Deck — swiss-pop dark theme
+   Note Deck — swiss-pop dark theme v2 (charcoal navy / editorial)
    全ページ共通。[data-theme="dark"] 配下のみ作用し、ライトは不変。
-   印刷は @media screen ガードにより常にライト配色。
+   方針: 黒紺の紙・低彩度の線・カードはカテゴリ暗色面＋同系の線と影。
+   黄色は小面積アクセント限定。印刷は @media screen ガードで常にライト。
    ============================================================ */
 
 /* テーマ切替チップ（theme.js が .meta 右端に注入。ライトでも表示） */
@@ -16,48 +17,80 @@
 :root{color-scheme:light;}
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --ink:#f1eee6;--paper:#141414;--card:#1d1d1b;--line:#e8e2d6;--muted:#aaa49a;
-  --blue:#8f9cff;--blue-bg:#202641;
-  --red:#ff766d;--red-bg:#38201e;
-  --yellow:#f2c94c;--yellow-bg:#332b15;
-  --green:#45d39a;--green-bg:#183227;
-  --purple:#a98cff;--purple-bg:#29213d;
-  --ydeep:#f2c94c; /* ライトの #7a6200（黄背景上の濃黄文字）の暗所用 */
+  --paper:#0d1117;--ink:#f2f4f8;--muted:#9aa4b5;--line:#2b3242;--card:#151b27;
+  --blue:#8c99ff;--blue-bg:#1b213f;--blue-shadow:#11162c;
+  --green:#4bd99b;--green-bg:#142f25;--green-shadow:#0c1f18;
+  --red:#ff7a70;--red-bg:#351d1d;--red-shadow:#211111;
+  --yellow:#f5d547;--yellow-bg:#2f2a13;--yellow-shadow:#1f1b0c;
+  --purple:#b39cff;--purple-bg:#251e3f;--purple-shadow:#171226;
+  --ydeep:#f5d547; /* ライトの #7a6200（黄背景上の濃黄文字）の暗所用 */
 }
 
-/* ---------- 影: アイボリー/黄の強い段差 → チャコール系の控えめな段差 ---------- */
-[data-theme="dark"] .meta a.back{color:#141414;border-color:#141414;box-shadow:2px 2px 0 #3a3935;}
-[data-theme="dark"] .meta .themetoggle{box-shadow:2px 2px 0 #3a3935;}
-[data-theme="dark"] .meta a.back:hover,[data-theme="dark"] .meta .themetoggle:hover{box-shadow:3px 3px 0 #3a3935;}
-[data-theme="dark"] footer a{color:#141414;border-color:#141414;box-shadow:2px 2px 0 #3a3935;}
-[data-theme="dark"] footer a:hover{box-shadow:3px 3px 0 #3a3935;}
+/* ---------- 構造線: 白系をやめ低彩度の青みグレーへ ---------- */
+[data-theme="dark"] .hero{border-bottom-color:var(--line);}
+[data-theme="dark"] .shead{border-bottom-color:var(--line);}
+[data-theme="dark"] .gband .line{background:var(--line);}
+[data-theme="dark"] .gband .gn{background:#1c2230;color:var(--ink);}
+[data-theme="dark"] thead{background:#1c2230;color:var(--ink);}
+[data-theme="dark"] .acc-ink .num,[data-theme="dark"] .acc-ink .tag{background:#1c2230;color:var(--ink);}
+
+/* ---------- 箱の枠線と影: 白枠→ --line、黒/黄影→深い黒紺 ---------- */
+[data-theme="dark"] .gc,[data-theme="dark"] .tbl,[data-theme="dark"] .code,
+[data-theme="dark"] .mode,[data-theme="dark"] .note,[data-theme="dark"] .foot-note,
+[data-theme="dark"] .pcard,[data-theme="dark"] .repo,[data-theme="dark"] .keyrow,
+[data-theme="dark"] .crow,[data-theme="dark"] .lk,[data-theme="dark"] .pitem,
+[data-theme="dark"] .kau .step,[data-theme="dark"] .pbox,[data-theme="dark"] .key,
+[data-theme="dark"] .flow,[data-theme="dark"] .final,[data-theme="dark"] .chead .bar,
+[data-theme="dark"] .pcard .ph{border-color:var(--line);}
+[data-theme="dark"] :where(.pill){border-color:var(--line);}
+[data-theme="dark"] td code,[data-theme="dark"] .icode,
+[data-theme="dark"] .gc .gd code,[data-theme="dark"] .note code,
+[data-theme="dark"] .pd code{border-color:var(--line);}
+
 [data-theme="dark"] .shead .num,[data-theme="dark"] .keyrow,[data-theme="dark"] .crow,
-[data-theme="dark"] .pbox,[data-theme="dark"] .chead .bar,[data-theme="dark"] .pcard .pb .code{box-shadow:3px 3px 0 #3a3935;}
+[data-theme="dark"] .pbox,[data-theme="dark"] .chead .bar,[data-theme="dark"] .pcard .pb .code{box-shadow:3px 3px 0 #080b10;}
 [data-theme="dark"] .gc,[data-theme="dark"] .pitem,[data-theme="dark"] .lk,
-[data-theme="dark"] .cell,[data-theme="dark"] .kau .step{box-shadow:4px 4px 0 #3a3935;}
+[data-theme="dark"] .kau .step{box-shadow:4px 4px 0 #080b10;}
 [data-theme="dark"] .tbl,[data-theme="dark"] .code,[data-theme="dark"] .pcard,
-[data-theme="dark"] .repo,[data-theme="dark"] .card{box-shadow:5px 5px 0 #3a3935;}
-[data-theme="dark"] .mode{box-shadow:6px 6px 0 #3a3935;}
-[data-theme="dark"] .keyrow:hover,[data-theme="dark"] .crow:hover{box-shadow:5px 5px 0 #3a3935;}
-[data-theme="dark"] .card:hover{box-shadow:8px 8px 0 #3a3935;}
-[data-theme="dark"] .flow{box-shadow:6px 6px 0 rgba(242,201,76,.45);}
-[data-theme="dark"] .final{box-shadow:8px 8px 0 rgba(242,201,76,.45);}
+[data-theme="dark"] .repo{box-shadow:5px 5px 0 #080b10;}
+[data-theme="dark"] .mode{box-shadow:6px 6px 0 #080b10;}
+[data-theme="dark"] .keyrow:hover,[data-theme="dark"] .crow:hover{box-shadow:5px 5px 0 #080b10;}
+[data-theme="dark"] .flow{box-shadow:6px 6px 0 #080b10;}
+[data-theme="dark"] .final{box-shadow:8px 8px 0 #080b10;}
 
-/* ---------- カード（index）: 面はチャコール、カテゴリ色は上部バー等のアクセントに限定 ---------- */
-[data-theme="dark"] .card{background:var(--card);border-color:var(--line);}
+/* ---------- index カード: カテゴリ暗色面＋同系の線と影（面・線・影を束ねる） ---------- */
+[data-theme="dark"] .card{background:var(--card);border-color:var(--line);box-shadow:5px 5px 0 #080b10;}
+[data-theme="dark"] .card:hover{box-shadow:8px 8px 0 #080b10;}
+[data-theme="dark"] .cat-blue .card{background:var(--blue-bg);border-color:var(--blue);box-shadow:5px 5px 0 var(--blue-shadow);}
+[data-theme="dark"] .cat-blue .card:hover{box-shadow:8px 8px 0 var(--blue-shadow);}
+[data-theme="dark"] .cat-green .card{background:var(--green-bg);border-color:var(--green);box-shadow:5px 5px 0 var(--green-shadow);}
+[data-theme="dark"] .cat-green .card:hover{box-shadow:8px 8px 0 var(--green-shadow);}
+[data-theme="dark"] .cat-red .card{background:var(--red-bg);border-color:var(--red);box-shadow:5px 5px 0 var(--red-shadow);}
+[data-theme="dark"] .cat-red .card:hover{box-shadow:8px 8px 0 var(--red-shadow);}
+[data-theme="dark"] .cat-purple .card{background:var(--purple-bg);border-color:var(--purple);box-shadow:5px 5px 0 var(--purple-shadow);}
+[data-theme="dark"] .cat-purple .card:hover{box-shadow:8px 8px 0 var(--purple-shadow);}
+[data-theme="dark"] .cat-yellow .card{background:var(--yellow-bg);border-color:var(--yellow);box-shadow:5px 5px 0 var(--yellow-shadow);}
+[data-theme="dark"] .cat-yellow .card:hover{box-shadow:8px 8px 0 var(--yellow-shadow);}
+[data-theme="dark"] .cat-ink .card{background:#1a2130;border-color:var(--line);box-shadow:5px 5px 0 #080b10;}
+[data-theme="dark"] .cat-ink .card:hover{box-shadow:8px 8px 0 #080b10;}
+[data-theme="dark"] .cat-ink .card .top{background:var(--muted);}
+[data-theme="dark"] .cat-yellow .card .cgo{color:var(--yellow);}
 
-/* ---------- 黒ベタブロック（flow / final）: 紙より一段深いチャコール ---------- */
-[data-theme="dark"] .flow,[data-theme="dark"] .final{background:#191917;color:var(--ink);}
-[data-theme="dark"] :where(.tok){border-color:rgba(241,238,230,.85);color:var(--ink);}
-[data-theme="dark"] .chk,[data-theme="dark"] .rule{border-color:#3a3935;}
-[data-theme="dark"] .final .conc{border-top-color:#33332f;}
-[data-theme="dark"] .final a.xref{color:var(--yellow);text-decoration-color:rgba(242,201,76,.5);}
+/* ---------- マトリクスセル（線引きシート）: カードと同じ束ね方 ---------- */
+[data-theme="dark"] .cell{border-color:var(--line);box-shadow:4px 4px 0 #080b10;}
+[data-theme="dark"] .cell.c-blue{border-color:var(--blue);box-shadow:4px 4px 0 var(--blue-shadow);}
+[data-theme="dark"] .cell.c-red{border-color:var(--red);box-shadow:4px 4px 0 var(--red-shadow);}
+[data-theme="dark"] .cell.c-green{border-color:var(--green);box-shadow:4px 4px 0 var(--green-shadow);}
+[data-theme="dark"] .cell.c-yellow{border-color:var(--yellow);box-shadow:4px 4px 0 var(--yellow-shadow);}
 
-/* ---------- インクで刷る要素の反転（帯・チップ） ---------- */
-[data-theme="dark"] thead{background:#24241f;color:var(--ink);}
-[data-theme="dark"] .gband .gn,[data-theme="dark"] .acc-ink .num,[data-theme="dark"] .acc-ink .tag{color:var(--paper);}
+/* ---------- 黒ベタブロック（flow / final）: 紙より一段深い黒紺 ---------- */
+[data-theme="dark"] .flow,[data-theme="dark"] .final{background:#10151e;color:var(--ink);}
+[data-theme="dark"] :where(.tok){border-color:var(--muted);color:var(--ink);}
+[data-theme="dark"] .chk,[data-theme="dark"] .rule{border-color:var(--line);}
+[data-theme="dark"] .final .conc{border-top-color:#222938;}
+[data-theme="dark"] .final a.xref{color:var(--yellow);text-decoration-color:rgba(245,213,71,.5);}
 
-/* ---------- アクセント地のチップ類: 明色化したアクセントに白文字は沈むため紙色文字へ ---------- */
+/* ---------- チップ類: アクセントは小面積で効かせる ---------- */
 [data-theme="dark"] .acc-blue .num,[data-theme="dark"] .acc-blue .tag,
 [data-theme="dark"] .acc-red .num,[data-theme="dark"] .acc-red .tag,
 [data-theme="dark"] .acc-green .num,[data-theme="dark"] .acc-green .tag,
@@ -68,24 +101,28 @@
 [data-theme="dark"] .kau .s1 .kanji,[data-theme="dark"] .kau .s3 .kanji,
 [data-theme="dark"] .ptier.t1 .pbox,
 [data-theme="dark"] .pcard.p-a .pk,[data-theme="dark"] .pcard.p-b .pk,
-[data-theme="dark"] .pcard.p-c .pk,[data-theme="dark"] .pcard.p-e .pk,
-[data-theme="dark"] .pitem .pn,[data-theme="dark"] .lk .off{color:var(--paper);}
-
-/* ---------- 黄色地のチップ類: 文字は常に墨 ---------- */
+[data-theme="dark"] .pcard.p-c .pk,[data-theme="dark"] .pitem .pn,
+[data-theme="dark"] .lk .off{color:var(--paper);}
+[data-theme="dark"] .pcard.p-e .pk{background:#1c2230;color:var(--ink);border-color:var(--line);}
 [data-theme="dark"] .acc-yellow .num,[data-theme="dark"] .acc-yellow .tag,
 [data-theme="dark"] .pill.c,[data-theme="dark"] .pill.s2,[data-theme="dark"] .pill.should,
-[data-theme="dark"] .kau .s2 .kanji,[data-theme="dark"] .pcard.p-d .pk{color:#141414;}
-[data-theme="dark"] .count{color:#141414;border-color:#141414;}
+[data-theme="dark"] .kau .s2 .kanji,[data-theme="dark"] .pcard.p-d .pk{color:#0d1117;}
+[data-theme="dark"] .count{color:#0d1117;border-color:#0d1117;}
+[data-theme="dark"] .meta a.back{color:#141414;border-color:#141414;box-shadow:2px 2px 0 #080b10;}
+[data-theme="dark"] .meta .themetoggle{box-shadow:2px 2px 0 #080b10;}
+[data-theme="dark"] .meta a.back:hover,[data-theme="dark"] .meta .themetoggle:hover{box-shadow:3px 3px 0 #080b10;}
+[data-theme="dark"] footer a{color:#141414;border-color:#141414;box-shadow:2px 2px 0 #080b10;}
+[data-theme="dark"] footer a:hover{box-shadow:3px 3px 0 #080b10;}
 
-/* ---------- 本文・表・細部の読みやすさ ---------- */
-[data-theme="dark"] td{border-bottom-color:#2c2c29;}
-[data-theme="dark"] tbody tr:hover{background:#232321;}
+/* ---------- 本文・表・細部 ---------- */
+[data-theme="dark"] td{border-bottom-color:#222a3a;}
+[data-theme="dark"] tbody tr:hover{background:#161d2b;}
 [data-theme="dark"] .gc .gd,[data-theme="dark"] .cell .d,
-[data-theme="dark"] .card .cdsc,[data-theme="dark"] .repo .rb{color:#ccc8bd;}
-[data-theme="dark"] .gc .gd code{background:#2a2a27;}
-[data-theme="dark"] .note code{background:#262623;}
-[data-theme="dark"] .pill.i,[data-theme="dark"] .pill.wont{background:#2a2a27;}
-[data-theme="dark"] .foot-note pre{color:#d9d4c7;}
-[data-theme="dark"] .hero .thesis b,[data-theme="dark"] .hero .lead b{background:linear-gradient(transparent 60%,rgba(242,201,76,.32) 60%);}
+[data-theme="dark"] .card .cdsc,[data-theme="dark"] .repo .rb{color:#c6cddb;}
+[data-theme="dark"] .gc .gd code{background:#1b2233;}
+[data-theme="dark"] .note code{background:#1b2233;}
+[data-theme="dark"] .pill.i,[data-theme="dark"] .pill.wont{background:#1b2233;}
+[data-theme="dark"] .foot-note pre{color:#c9d1e0;}
+[data-theme="dark"] .hero .thesis b,[data-theme="dark"] .hero .lead b{background:linear-gradient(transparent 60%,rgba(245,213,71,.28) 60%);}
 
 } /* end @media screen */
