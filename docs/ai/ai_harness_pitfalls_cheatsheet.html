@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIハーネスの落とし穴と最小構成</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.15em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:740px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:740px;}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--green-bg);}.mode.m2{background:var(--blue-bg);}.mode.m3{background:var(--purple-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
+  .mode.m1 .en{color:var(--green);}.mode.m2 .en{color:var(--blue);}.mode.m3 .en{color:var(--purple);}
+  .mode .jp{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.15;margin:7px 0 8px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
+  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
+  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .tok{font-family:var(--mono);font-weight:700;font-size:12px;padding:6px 10px;border:2px solid #fff;color:#fff;}
+  .tok.g{border-color:var(--green);color:#6fe3b6;}.tok.b{border-color:var(--blue);color:#9fb0ff;}.tok.p{border-color:var(--purple);color:#c9a4ff;}.tok.y{border-color:var(--yellow);color:var(--yellow);}.tok.r{border-color:var(--red);color:#ff9b92;}
+  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
+
+  .gband{display:flex;align-items:center;gap:14px;margin:52px 0 4px;}
+  .gband .gn{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.18em;color:#fff;background:var(--ink);padding:6px 11px;white-space:nowrap;}
+  .gband h3{font-family:var(--disp);font-weight:900;font-size:clamp(19px,3vw,26px);letter-spacing:-.02em;}
+  .gband .line{flex:1;height:3px;background:var(--ink);}
+
+  section{padding:34px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
+
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+  .asi{font-family:var(--mono);font-weight:700;font-size:11px;background:var(--purple);color:#fff;padding:1px 6px;border:2px solid var(--purple);white-space:nowrap;}
+
+  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
+    font-family:var(--mono);font-size:12.5px;line-height:1.9;padding:32px 17px 15px;margin:12px 0 16px;overflow-x:auto;white-space:pre-wrap;}
+  .code .k{color:#7fd6ff;font-weight:700;}.code .v{color:#ffd84d;}.code .c{color:#7c8597;}.code .e{color:#9fe6b8;}
+  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s;}
+  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
+  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px;margin:12px 0 14px;}
+  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;display:flex;flex-direction:column;}
+  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:5px;line-height:1.4;}
+  .gc .gd{font-size:12.5px;color:#333;line-height:1.6;flex:1;}
+  .gc .gd b{font-weight:700;}
+
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
+  .note.r{border-left-color:var(--red);background:var(--red-bg);}
+  .note.b{border-left-color:var(--blue);background:var(--blue-bg);}
+  .note b{font-weight:700;}.note code{font-family:var(--mono);font-weight:700;background:#fff;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;}
+  .chk{border:2px solid #444;padding:11px 13px;font-size:13px;line-height:1.5;}
+  .chk b{color:var(--yellow);}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+  .final .link{margin-top:12px;font-size:12.5px;color:#bdbdbd;line-height:1.7;}
+  .final .link b{color:#fff;}
+
+  a.xref{color:var(--blue);font-weight:700;text-decoration:underline;text-decoration-color:rgba(31,61,240,.4);text-underline-offset:2px;}
+  a.xref:hover{text-decoration-color:var(--blue);}
+  .final a.xref{color:#ffd84d;text-decoration-color:rgba(255,216,77,.5);}
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.code,.final,.note,.shead .num{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; AI HARNESS / OPERATIONS</span>
+    <span>落とし穴と最小構成 ― CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">ハーネス</span>の落とし穴<span class="dot">.</span></h1>
+    <p class="sub">AIエージェント導入 ― 失敗あるある &amp; 最小構成</p>
+    <p class="thesis"><b>ハーネスは、AIに安全に作業させるための仕組み。</b>最初から作り込まず、まず最小限の安全から始める。</p>
+    <p class="lead">前半は“何が壊れるか”、後半は“最小で何を置くか”。実装の詳細は<a class="xref" href="../claude-code/claudecode_settings_cheatsheet.html"><b>設定早見表</b></a>、任せる判断は<a class="xref" href="ai_delegation_cheatsheet.html"><b>線引きシート</b></a>、事故対応は<a class="xref" href="../framework/retrospective_cheatsheet.html"><b>振り返りシート</b></a>へ。ここは束ねる役。</p>
+  </header>
+
+  <!-- CORE: the irreducible 3 -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">DON'T FALL</div>
+      <div class="jp">落ちない</div>
+      <div class="desc">AIが勝手に暴走・破壊しない。権限とサンドボックスで被害の上限を決める。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">STOPPABLE</div>
+      <div class="jp">止められる</div>
+      <div class="desc">人が途中で止められる。不可逆な操作は承認制にする。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">TRACEABLE</div>
+      <div class="jp">追える</div>
+      <div class="desc">何をしたか後で分かる。作業ログ・記録を必ず残す。</div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow rv">
+    <div class="flabel">最小ハーネスの組み立て順</div>
+    <div class="seq">
+      <span class="tok b">入口</span><span class="arr">→</span>
+      <span class="tok r">権限</span><span class="arr">→</span>
+      <span class="tok g">作業ログ</span><span class="arr">→</span>
+      <span class="tok p">レビュー観点</span><span class="arr">→</span>
+      <span class="tok y">人間の判断</span><span class="arr">→</span>
+      <span class="tok r">rollback</span>
+    </div>
+  </div>
+
+  <!-- ===== PART 1 ===== -->
+  <div class="gband rv"><span class="gn">PART 1</span><h3>落とし穴（失敗あるある）</h3><span class="line"></span></div>
+
+  <!-- 01 失敗あるある -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">01</span><h2>やりがちな7つ</h2><span class="tag">PITFALLS</span></div>
+    <p class="lede">どれも「賢さ」でなく<b>仕組みの不足</b>で起きる。症状 → 対策で押さえる。</p>
+    <div class="grid">
+      <div class="gc">
+        <div class="gt">① プロンプトインジェクション → ツール実行</div>
+        <div class="gd"><b>症状：</b>外部入力に紛れた指示で、AIが“仕事の一部”として危険操作。<br><b>対策：</b>入力元を信用しない・権限を絞る・実行を記録。</div>
+      </div>
+      <div class="gc">
+        <div class="gt">② Shadow AI（野良エージェント）</div>
+        <div class="gd"><b>症状：</b>各自が勝手に使い、誰が何に繋いでるか不明。事故っても追えない。<br><b>対策：</b>禁止でなく、使ってよい入口・権限・対象を定義。</div>
+      </div>
+      <div class="gc">
+        <div class="gt">③ CI通過 ≠ 完了</div>
+        <div class="gd"><b>症状：</b>Lint・テスト通過＝リリースOKと錯覚。業務影響や計測は見ていない。<br><b>対策：</b>「技術チェック / 実装判断 / 業務リスク受容」を分ける。</div>
+      </div>
+      <div class="gc">
+        <div class="gt">④ AIレビューが感想文</div>
+        <div class="gd"><b>症状：</b>「全体的に良いです」で返り、事故点（設定・連携・権限）を見ない。<br><b>対策：</b>レビュー観点を固定（仕様/環境/外部連携/権限/ログ）。</div>
+      </div>
+      <div class="gc">
+        <div class="gt">⑤ 生成コードが別環境で動かない</div>
+        <div class="gd"><b>症状：</b>手元では動くが別環境で死ぬ。依存・OS・バージョン差分。<br><b>対策：</b>差分レビューだけでなく、クリーン環境での再現確認。</div>
+      </div>
+      <div class="gc">
+        <div class="gt">⑥ CLAUDE.md が肥大化</div>
+        <div class="gd"><b>症状：</b>ルール・禁止・例外を足し続け、巨大な館内規則に。<br><b>対策：</b>完全版を狙わず、入口→禁止→レビュー→証跡の順で育てる。</div>
+      </div>
+      <div class="gc">
+        <div class="gt">⑦ 周辺の仕組みが本体</div>
+        <div class="gd"><b>症状：</b>権限・文脈・ログ・hooks・MCP…と増え、もはや小さな開発基盤。<br><b>対策：</b>「ツール選定」でなく「最小の基盤設計」として扱う。全部は最初からやらない。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 OWASP -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">02</span><h2>参照軸：OWASP Agentic Top 10</h2><span class="tag">REFERENCE</span></div>
+    <p class="lede">AIセキュリティを「プロンプト漏洩対策」で止めない。OWASP が <b>Agentic Applications 向け Top 10（2026・2025年12月公開）</b>を出している。主なリスク（抜粋）：</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>コード</th><th>リスク</th></tr></thead>
+        <tbody>
+          <tr><td><span class="asi">ASI01</span></td><td>目標の乗っ取り（外部入力・ツール出力で目的を歪める）</td></tr>
+          <tr><td><span class="asi">ASI02</span></td><td>ツールの悪用（過剰権限・曖昧な指示で正規ツールを誤用）</td></tr>
+          <tr><td><span class="asi">ASI03</span></td><td>認証情報・権限の悪用（継承/キャッシュした権限の乱用）</td></tr>
+          <tr><td><span class="asi">ASI04</span></td><td>供給網の汚染（ツール・モデル・ペルソナの改ざん）</td></tr>
+          <tr><td><span class="asi">ASI05</span></td><td>想定外のコード実行</td></tr>
+          <tr><td><span class="asi">ASI06</span></td><td>メモリ・文脈の汚染（RAG・記憶の毒入れ）</td></tr>
+          <tr><td><span class="asi">ASI07</span></td><td>エージェント間通信の不備（多エージェント連携の悪用）</td></tr>
+          <tr><td><span class="asi">ASI08</span></td><td>連鎖的な障害（1つの失敗が次々に波及）</td></tr>
+          <tr><td><span class="asi">ASI10</span></td><td>暴走エージェント（意図から逸脱した挙動）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note b"><b>キモは Least Agency：</b>自律は“既定”でなく“獲得するもの”。「何にアクセスできるか」だけでなく「<b>確認なしでどこまで動けるか</b>」を絞る。全10項目は OWASP 公式（genai.owasp.org）を参照。</div>
+    <div class="note"><b>系譜：</b>このAgentic版は <b>OWASP LLM Top 10</b>（プロンプトインジェクション＝LLM01 等）の発展形。単発のLLMでなく、<b>計画し・行動する</b>エージェント特有のリスク（権限・ツール・多エージェント・自律）に軸足を移している。</div>
+  </section>
+
+  <!-- ===== PART 2 ===== -->
+  <div class="gband rv"><span class="gn">PART 2</span><h3>最小構成</h3><span class="line"></span></div>
+
+  <!-- 03 まず満たす3つ -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">03</span><h2>まず満たす3つ</h2><span class="tag">MINIMUM</span></div>
+    <p class="lede">最初に必要なのは全部ではなく、この<b>3つだけ</b>。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">落ちない</div><div class="gd">AIが勝手に暴走・破壊しない。権限を絞り、サンドボックスで被害の上限を決める。</div></div>
+      <div class="gc"><div class="gt">止められる</div><div class="gd">人が途中で止められる。送信・本番反映・削除など不可逆操作は承認制。</div></div>
+      <div class="gc"><div class="gt">追える</div><div class="gd">何をしたか後で分かる。見た/変えたファイル・判断・未確認を記録。</div></div>
+    </div>
+    <div class="note"><b>最小ライン：</b>この3つが満たせていれば、まず動かしてよい。残りは走りながら足す。</div>
+    <div class="note b"><b>人のゲートはどこに置く？：</b>操作ごと（最も厳）／計画ごと（plan を承認）／成果物ごと（PR・差分で承認）。<b>影響が大きいほど手前で、小さく可逆なら後ろ（事後監査）</b>。＝<a class="xref" href="ai_delegation_cheatsheet.html">線引きシート</a>の自律度①〜④の置き換え。</div>
+  </section>
+
+  <!-- 04 最小ハーネス -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">04</span><h2>最小ハーネス（6つ）</h2><span class="tag">TEMPLATE</span></div>
+    <p class="lede">この6つを埋めれば、最小限の安全は確保できる。コピーして使う。</p>
+    <div class="code"><span class="c"># 最小ハーネス</span>
+<span class="k">01_入口</span>     対象リポジトリ / やらせる範囲 / やらせない範囲
+<span class="k">02_権限</span>     読取 / 書込 / コマンド実行 / 外部API / <span class="e">secret接触は禁止</span>
+<span class="k">03_作業ログ</span>  見たファイル / 変えたファイル / 判断したこと / 未確認のこと
+<span class="k">04_レビュー</span>  仕様整合 / 影響範囲 / 例外系 / セキュリティ / 計測 / rollback
+<span class="k">05_人間判断</span>  採用 / 差し戻し / 保留 / リスク受容
+<span class="k">06_復旧</span>     rollback手順 / 撤退ライン（どうなったら止めるか）</div>
+  </section>
+
+  <!-- 05 巨大化を止める -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">05</span><h2>巨大化を止める</h2><span class="tag">STOP BLOAT</span></div>
+    <p class="lede">ハーネス整備は、放っておくと「全部整えたい→本体が進まない」に陥る。毎回この一言で切る：<b>「これは将来必要。でも今回のゲートではない。」</b></p>
+    <div class="note"><b>2つの問いだけ：</b>① 今回の<b>最小安全条件</b>は何か？　② 今回やらないが<b>台帳に残す</b>ものは何か？　CLAUDE.md 等も完全版を狙わず、Phase 0 入口 → 1 禁止 → 2 レビュー → 3 証跡、と段階で育てる。</div>
+  </section>
+
+  <!-- 06 アンチパターン -->
+  <section class="acc-ink rv">
+    <div class="shead"><span class="num">06</span><h2>アンチパターン</h2><span class="tag">PITFALLS</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">最初から完璧を狙う</div><div class="gd">全部整えてから始める＝本体が進まない。まず最小限から。</div></div>
+      <div class="gc"><div class="gt">セキュリティ＝漏洩対策だけ</div><div class="gd">権限・ツール実行・メモリ・外部入力まで見る。</div></div>
+      <div class="gc"><div class="gt">権限を絞らない</div><div class="gd">必要最小限（Least Agency）。自律は獲得するもの。</div></div>
+      <div class="gc"><div class="gt">ログを残さない</div><div class="gd">事故っても追えない。記録は最優先の1つ。</div></div>
+      <div class="gc"><div class="gt">AIレビュー任せ</div><div class="gd">感想文を信用しない。観点を固定する。</div></div>
+      <div class="gc"><div class="gt">CLAUDE.md 肥大</div><div class="gd">最初から完全にしない。段階で育てる。</div></div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">まず、この3つ</div>
+    <div class="fs">全部を最初から、ではなく最小から。</div>
+    <div class="checks">
+      <div class="chk">AIが勝手に<b>落ちない</b>か（権限・上限）</div>
+      <div class="chk">人が途中で<b>止められる</b>か（承認）</div>
+      <div class="chk">何をしたか<b>追える</b>か（ログ）</div>
+      <div class="chk"><b>今回のゲート</b>を絞ったか</div>
+    </div>
+    <p class="conc">結論：<b>まず「落ちない・止められる・追える」を満たし、巨大化は“今回のゲートではない”で止める。</b>整備は段階的に、本体を止めない範囲で。</p>
+    <p class="link">つながり：実装の詳細 → <a class="xref" href="../claude-code/claudecode_settings_cheatsheet.html"><b>設定早見表</b></a>（permissions / hooks / MCP）｜ 任せる判断 → <a class="xref" href="ai_delegation_cheatsheet.html"><b>任せる線引き</b></a>｜ 事故対応 → <a class="xref" href="../framework/retrospective_cheatsheet.html"><b>振り返り・障害対応</b></a>。</p>
+  </div>
+
+  <footer>AIハーネスの落とし穴と最小構成 ― AI harness / operations — checked 2026-06-12 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(block){
+    var text = block.innerText;
+    var btn = document.createElement('button');
+    btn.className = 'copybtn'; btn.type = 'button'; btn.textContent = 'copy';
+    function done(){ btn.textContent='copied!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='copy'; btn.classList.remove('done'); }, 1300); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='手動で選択'; }
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }catch(e){ fallback(); }
+    });
+    block.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

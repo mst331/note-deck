@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web開発×AI活用 実務チートシート集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+
+  .hero{padding:46px 0 28px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(32px,5vw,52px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:680px;}
+  .hero .count{display:inline-block;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.1em;padding:3px 9px;border:2px solid var(--ink);background:var(--yellow);margin-top:14px;}
+
+  .gband{display:flex;align-items:center;gap:14px;margin:52px 0 4px;}
+  .gband .gn{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.18em;color:#fff;background:var(--ink);padding:6px 11px;white-space:nowrap;}
+  .gband h3{font-family:var(--disp);font-weight:900;font-size:clamp(19px,3vw,26px);letter-spacing:-.02em;}
+  .gband .line{flex:1;height:3px;background:var(--ink);}
+  .slede{font-size:13px;color:var(--muted);margin:-8px 0 16px;max-width:720px;}
+  section{padding:42px 0 0;}
+  .chead{display:flex;align-items:center;gap:13px;margin-bottom:18px;}
+  .chead .bar{width:16px;height:28px;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);}
+  .cat-blue .bar{background:var(--blue);}
+  .cat-purple .bar{background:var(--purple);}
+  .cat-green .bar{background:var(--green);}
+  .cat-red .bar{background:var(--red);}
+  .cat-yellow .bar{background:var(--yellow);}
+  .cat-ink .bar{background:var(--ink);}
+  .chead h2{font-family:var(--disp);font-weight:900;font-size:clamp(18px,2.6vw,24px);letter-spacing:-.01em;}
+  .chead .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;color:var(--muted);margin-left:auto;}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+  .card{display:flex;flex-direction:column;border:2px solid var(--ink);background:var(--card);box-shadow:5px 5px 0 var(--ink);
+    padding:0;text-decoration:none;color:inherit;overflow:hidden;transition:transform .13s,box-shadow .13s;}
+  .card:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink);}
+  .card .top{height:8px;}
+  .cat-blue .card .top{background:var(--blue);}
+  .cat-purple .card .top{background:var(--purple);}
+  .cat-green .card .top{background:var(--green);}
+  .cat-red .card .top{background:var(--red);}
+  .cat-yellow .card .top{background:var(--yellow);}
+  .cat-ink .card .top{background:var(--ink);}
+  .card .body{padding:16px 17px 14px;display:flex;flex-direction:column;flex:1;}
+  .card .ctag{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.13em;color:var(--muted);}
+  .card .cttl{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.15;margin:6px 0 8px;letter-spacing:-.01em;}
+  .card .cdsc{font-size:12.5px;color:#333;line-height:1.6;flex:1;}
+  .card .cgo{font-family:var(--mono);font-weight:700;font-size:12px;margin-top:12px;display:flex;align-items:center;gap:6px;}
+  .cat-blue .card .cgo{color:var(--blue);}
+  .cat-purple .card .cgo{color:var(--purple);}
+  .cat-green .card .cgo{color:var(--green);}
+  .cat-red .card .cgo{color:var(--red);}
+  .cat-yellow .card .cgo{color:#7a6200;}
+  .cat-ink .card .cgo{color:var(--ink);}
+  .card .cgo .fn{margin-left:auto;font-weight:500;font-size:10px;color:var(--muted);}
+
+  .foot-note{margin-top:54px;border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:16px 18px;}
+  .foot-note .fnt{font-family:var(--disp);font-weight:900;font-size:15px;margin-bottom:8px;}
+  .foot-note pre{font-family:var(--mono);font-size:11.5px;line-height:1.65;white-space:pre-wrap;color:#3a3a32;}
+
+  footer{margin-top:30px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .55s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
+
+  @media (max-width:640px){.cards{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}.card{transition:none;}}
+  @media print{body{background:#fff;}.card,.chead .bar,.foot-note{box-shadow:none;}.rv{animation:none;opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><span class="dot">●</span>&nbsp; WEB DEVELOPMENT CHEATSHEETS</span>
+    <span>INDEX</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">チート</span>シート<span class="dot">.</span></h1>
+    <p class="sub">実務チートシート ｜ ジャンル別インデックス</p>
+    <p class="lead">実務チートシート集。AIの出力品質は、渡す側の整理で決まる ― 前半は AI と働く道具、後半は人が握る側の土台。カードから各シートを開けます。印刷・PDF化もそのまま。</p>
+    <span class="count">12 SHEETS / 4 GENRES</span>
+  </header>
+
+  <!-- PART 1 -->
+  <div class="gband rv"><span class="gn">PART 1</span><h3>AIと働く ― 使う・任せる・検証する</h3><span class="line"></span></div>
+
+  <!-- Claude 活用 -->
+  <section class="cat-purple rv">
+    <div class="chead"><span class="bar"></span><h2>Claude 活用</h2><span class="en">CLAUDE / USAGE</span></div>
+    <p class="slede">賢い使い方の芯と、実務プロンプトの型。</p>
+    <div class="cards">
+      <a class="card" href="./claude/claude_best_practices_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">BEST PRACTICES</div>
+          <div class="cttl">Claudeの作法</div>
+          <div class="cdsc">賢い使い方の芯。計画してから・文脈は軽く・難度に合わせる。公式ドキュメントを1枚に圧縮。</div>
+          <div class="cgo">開く → <span class="fn">claude/</span></div>
+        </div>
+      </a>
+      <a class="card" href="./claude/prompt_templates_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">PROMPT TEMPLATES</div>
+          <div class="cttl">プロンプトの型</div>
+          <div class="cdsc">実務プロンプトのテンプレ集。レビュー/バグ調査/移行/文書作成を、埋めるだけの型で。コピー対応。</div>
+          <div class="cgo">開く → <span class="fn">claude/</span></div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Claude Code -->
+  <section class="cat-green rv">
+    <div class="chead"><span class="bar"></span><h2>Claude Code・エコシステム</h2><span class="en">CLAUDE CODE</span></div>
+    <p class="slede">ターミナルで動くエージェントの操作・設定・拡張。</p>
+    <div class="cards">
+      <a class="card" href="./claude-code/claudecode_slash_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">SLASH COMMANDS</div>
+          <div class="cttl">スラッシュコマンド</div>
+          <div class="cdsc">Claude Code の / コマンド早見。セッション管理・設定・拡張＋キーボード＋CLIフラグ。</div>
+          <div class="cgo">開く → <span class="fn">claude-code/</span></div>
+        </div>
+      </a>
+      <a class="card" href="./claude-code/claudecode_settings_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">SETTINGS</div>
+          <div class="cttl">設定早見表</div>
+          <div class="cdsc">settings / permissions / hooks / memory / MCP。優先順位とゲート化まで。チーム導入の最小セット付き。</div>
+          <div class="cgo">開く → <span class="fn">claude-code/</span></div>
+        </div>
+      </a>
+      <a class="card" href="./claude-code/claude_repos_skills_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">REPOS / SKILLS</div>
+          <div class="cttl">おすすめリポ / Skills</div>
+          <div class="cdsc">Claude周りの実在リポ厳選。公式・awesome系・スキル集・MCP・運用。リンク付き。</div>
+          <div class="cgo">開く → <span class="fn">claude-code/</span></div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- AIとの協働 -->
+  <section class="cat-yellow rv">
+    <div class="chead"><span class="bar"></span><h2>AIとの協働</h2><span class="en">AI COLLABORATION</span></div>
+    <p class="slede">何を任せ、どう検証し、どう安全に動かすか ― 人とAIの境界線。</p>
+    <div class="cards">
+      <a class="card" href="./ai/ai_delegation_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">DELEGATION</div>
+          <div class="cttl">任せる線引き</div>
+          <div class="cdsc">AIに任せる/任せないの判断軸。影響×検証性のマトリクス・自律度4段階・渡す前の1分チェック。便帳の背骨。</div>
+          <div class="cgo">開く → <span class="fn">ai/</span></div>
+        </div>
+      </a>
+      <a class="card" href="./ai/ai_review_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">REVIEW / ACCEPT</div>
+          <div class="cttl">AI出力の検収</div>
+          <div class="cdsc">流暢さ≠正しさ。観点を固定してレビュー・独立した手段で裏取り・受け入れ基準で検収。ハルシネーションの見分け方。</div>
+          <div class="cgo">開く → <span class="fn">ai/</span></div>
+        </div>
+      </a>
+      <a class="card" href="./ai/ai_harness_pitfalls_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">HARNESS / OPS</div>
+          <div class="cttl">ハーネスの落とし穴</div>
+          <div class="cdsc">AIエージェント導入の失敗あるある7つ＋OWASP Agentic Top 10。「落ちない・止められる・追える」の最小構成から。</div>
+          <div class="cgo">開く → <span class="fn">ai/</span></div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- PART 2 -->
+  <div class="gband rv"><span class="gn">PART 2</span><h3>人が握る側 ― 考える・決める・検収する</h3><span class="line"></span></div>
+
+  <!-- 仕事の型 -->
+  <section class="cat-ink rv">
+    <div class="chead"><span class="bar"></span><h2>仕事の型</h2><span class="en">FRAMEWORKS</span></div>
+    <p class="slede">AIに渡す前の整理と、出力を検収する基準。指示の質＝出力の質、の土台。</p>
+    <div class="cards">
+      <a class="card" href="./framework/thinking_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">THINKING</div>
+          <div class="cttl">思考の型</div>
+          <div class="cdsc">MECE・ロジックツリー・空雨傘・ピラミッド・SCQA・PREP。「話が飛ぶ」を防ぐ構造化の土台。AIへの指示にも効く。</div>
+          <div class="cgo">開く → <span class="fn">framework/</span></div>
+        </div>
+      </a>
+      <a class="card" href="./framework/requirements_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">REQUIREMENTS</div>
+          <div class="cttl">要件定義の型</div>
+          <div class="cdsc">業務→機能→非機能の3層。In/Out・MoSCoW・ユーザーストーリー・受け入れ条件。ベンダー依頼にも社内実装にも。</div>
+          <div class="cgo">開く → <span class="fn">framework/</span></div>
+        </div>
+      </a>
+      <a class="card" href="./framework/project_planning_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">PLANNING</div>
+          <div class="cttl">計画の型</div>
+          <div class="cdsc">WBS・3点見積り・クリティカルパス・RACI・リスク登録簿。ズレを早く見つけるための計画を1枚で。</div>
+          <div class="cgo">開く → <span class="fn">framework/</span></div>
+        </div>
+      </a>
+      <a class="card" href="./framework/retrospective_cheatsheet.html">
+        <div class="top"></div>
+        <div class="body">
+          <div class="ctag">RETROSPECTIVE</div>
+          <div class="cttl">振り返りの型</div>
+          <div class="cdsc">KPT とポストモーテム。Blameless・タイムライン・なぜなぜ・恒久対策で、同じ失敗を繰り返さない。</div>
+          <div class="cgo">開く → <span class="fn">framework/</span></div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <div class="foot-note rv">
+    <div class="fnt">フォルダ構成（この index の前提）</div>
+    <pre>docs/
+├── index.html
+├── claude/        claude_best_practices / prompt_templates
+├── claude-code/   claudecode_slash / claudecode_settings / claude_repos_skills
+├── ai/            ai_delegation / ai_review / ai_harness_pitfalls
+└── framework/     thinking / requirements / project_planning / retrospective
+  </div>
+
+  <footer>cheat sheets — unofficial — 非公式の実務メモ（免責は README 参照）</footer>
+
+</div>
+</body>
+</html>

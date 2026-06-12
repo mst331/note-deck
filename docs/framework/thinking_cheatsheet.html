@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>思考の型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:730px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:730px;}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--blue-bg);}.mode.m2{background:var(--green-bg);}.mode.m3{background:var(--purple-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
+  .mode.m1 .en{color:var(--blue);}.mode.m2 .en{color:var(--green);}.mode.m3 .en{color:var(--purple);}
+  .mode .jp{font-family:var(--disp);font-weight:900;font-size:22px;line-height:1.1;margin:7px 0 8px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
+  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
+  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .tok{font-family:var(--mono);font-weight:700;font-size:12px;padding:6px 10px;border:2px solid #fff;color:#fff;}
+  .tok.b{border-color:var(--blue);color:#9fb0ff;}.tok.g{border-color:var(--green);color:#6fe3b6;}.tok.r{border-color:var(--red);color:#ff9b92;}.tok.p{border-color:var(--purple);color:#c9a4ff;}
+  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
+
+  /* GROUP BANNER */
+  .gband{display:flex;align-items:center;gap:14px;margin:52px 0 4px;}
+  .gband .gn{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.18em;color:#fff;background:var(--ink);padding:6px 11px;white-space:nowrap;}
+  .gband h3{font-family:var(--disp);font-weight:900;font-size:clamp(19px,3vw,26px);letter-spacing:-.02em;white-space:nowrap;}
+  .gband .line{flex:1;height:3px;background:var(--ink);}
+
+  section{padding:34px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
+
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
+    font-family:var(--mono);font-size:12.5px;line-height:1.95;padding:32px 17px 15px;margin:12px 0 16px;overflow-x:auto;white-space:pre-wrap;}
+  .code .k{color:#7fd6ff;font-weight:700;}.code .v{color:#ffd84d;}.code .c{color:#7c8597;}
+  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s;}
+  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
+  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:12px 0 14px;}
+  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
+  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:4px;}
+  .gc .gd{font-size:12.5px;color:#333;line-height:1.6;}
+  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  /* 空雨傘 */
+  .kau{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 14px;}
+  .kau .step{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:0;overflow:hidden;}
+  .kau .kh{display:flex;align-items:center;gap:9px;padding:10px 13px;border-bottom:2px solid var(--ink);}
+  .kau .kanji{font-family:var(--disp);font-weight:900;font-size:22px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:2px solid var(--ink);}
+  .kau .s1 .kanji{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .kau .s2 .kanji{background:var(--yellow);}
+  .kau .s3 .kanji{background:var(--green);color:#fff;border-color:var(--green);}
+  .kau .klabel b{font-size:14px;}
+  .kau .klabel span{font-family:var(--mono);font-size:10px;color:var(--muted);display:block;letter-spacing:.05em;}
+  .kau .kb{padding:11px 13px;font-size:12.5px;line-height:1.6;color:#333;}
+  .kau .kb em{font-style:normal;font-family:var(--mono);font-size:11.5px;color:var(--muted);}
+
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
+  .note.r{border-left-color:var(--red);background:var(--red-bg);}
+  .note b{font-weight:700;}
+
+  /* PYRAMID */
+  .pyramid{display:flex;flex-direction:column;align-items:center;gap:9px;margin:16px 0;}
+  .ptier{display:flex;gap:9px;justify-content:center;width:100%;}
+  .pbox{border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:10px 8px;text-align:center;font-weight:700;font-size:12.5px;line-height:1.3;}
+  .ptier.t1 .pbox{width:46%;background:var(--purple);color:#fff;border-color:var(--purple);}
+  .ptier.t2 .pbox{flex:1;max-width:30%;background:var(--purple-bg);}
+  .ptier.t3 .pbox{width:92%;background:#f3f3f3;color:var(--muted);font-weight:500;font-size:12px;}
+  .paxes{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:6px;}
+  .pax{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--muted);}
+  .pax b{color:var(--purple);}
+
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;}
+  .chk{border:2px solid #444;padding:11px 13px;font-size:13px;line-height:1.5;}
+  .chk b{color:var(--yellow);}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}.kau{grid-template-columns:1fr;}.ptier.t2 .pbox{font-size:11px;padding:8px 5px;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.code,.final,.note,.shead .num,.pbox,.kau .step{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; THINKING / FRAMEWORK</span>
+    <span>思考の型 ― CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">思考</span>の型<span class="dot">.</span></h1>
+    <p class="sub">構造化・論理・伝え方</p>
+    <p class="thesis"><b>考えと伝え方は「構造」で決まる。</b>結論から、漏れなくダブりなく。</p>
+    <p class="lead">「話が飛ぶ」を防ぐ土台。前半は<b>考える道具</b>（論点・MECE・ツリー・空雨傘）、後半は<b>伝え方の型</b>（ピラミッド・SCQA・PREP）。</p>
+  </header>
+
+  <!-- CORE MOVES -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">DIVIDE</div>
+      <div class="jp">分ける</div>
+      <div class="desc">MECE。漏れなくダブりなく、意味のある切り口で分解する。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">DIG</div>
+      <div class="jp">掘る</div>
+      <div class="desc">ロジックツリー。なぜ?／どうやる? を階層で掘り下げる。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">STACK</div>
+      <div class="jp">積む</div>
+      <div class="desc">ピラミッド。結論を頂点に、根拠を下に。結論から伝える。</div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow rv">
+    <div class="flabel">考える → 伝える の順番</div>
+    <div class="seq">
+      <span class="tok r">論点(イシュー)</span><span class="arr">→</span>
+      <span class="tok r">仮説</span><span class="arr">→</span>
+      <span class="tok b">MECEに分解</span><span class="arr">→</span>
+      <span class="tok g">事実 / 根拠</span><span class="arr">→</span>
+      <span class="tok p">結論から伝える</span>
+    </div>
+  </div>
+
+  <!-- ============ PART 1 ============ -->
+  <div class="gband rv"><span class="gn">PART 1</span><h3>考える（思考の道具）</h3><span class="line"></span></div>
+
+  <!-- 01 イシュー -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">01</span><h2>イシューから始める / 仮説思考</h2><span class="tag">ISSUE</span></div>
+    <p class="lede">調べ始める前に<b>「解くべき論点」</b>を定義する。網羅より、仮説を立てて検証する。ここが起点。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">イシューを立てる</div><div class="gd">「本当に解くべき問いは何か」。問いがズレると、どれだけ精緻でも全部ムダになる。</div></div>
+      <div class="gc"><div class="gt">仮説思考</div><div class="gd">答えを先に仮置きし、検証する。情報を全部集めてから考える、の逆。速い。</div></div>
+      <div class="gc"><div class="gt">So What? / True?</div><div class="gd">「だから何?(結論)」「それ本当?(根拠)」で自分の主張を詰める。</div></div>
+    </div>
+    <div class="note r"><b>「話が飛ぶ」原因のひとつ：</b>論点がズレたまま精緻化すると、<b>立派だが的外れ</b>な資料になる。まず問いを相手と合わせる。</div>
+  </section>
+
+  <!-- 02 MECE -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">02</span><h2>MECE ― 分ける</h2><span class="tag">DIVIDE</span></div>
+    <p class="lede">Mutually Exclusive, Collectively Exhaustive ＝ ダブりなく・漏れなく。完璧な網羅より<b>「意味のある切り口」</b>を選ぶ。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>切り口</th><th>例</th></tr></thead>
+        <tbody>
+          <tr><td>時系列・段階</td><td>過去/現在/未来、前/中/後</td></tr>
+          <tr><td>プロセス</td><td>集客 → 検討 → CV → 継続</td></tr>
+          <tr><td>対象・属性</td><td>新規/既存、PC/SP</td></tr>
+          <tr><td>対立軸</td><td>質×量、短期×長期</td></tr>
+          <tr><td>階層</td><td>全体 → 部分</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>コツ：</b>切り口は<b>1つの軸に絞る</b>。混ぜるとダブる。「その他」が大きくなったら、切り口の選び方を見直すサイン。</div>
+  </section>
+
+  <!-- 03 ロジックツリー -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">03</span><h2>ロジックツリー ― 掘る</h2><span class="tag">DIG</span></div>
+    <p class="lede">論点を階層で分解する。種類で使い分ける。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>種類</th><th>問い</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td><b>What ツリー</b></td><td>何で構成されている?</td><td>要素分解・全体像の把握</td></tr>
+          <tr><td><b>Why ツリー</b></td><td>なぜ起きた?</td><td>原因の究明</td></tr>
+          <tr><td><b>How ツリー</b></td><td>どうやる?</td><td>打ち手・解決策の洗い出し</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>コツ：</b>各階層で<b>MECE</b>に、<b>粒度を揃える</b>。深さは3階層が目安。深すぎると枝が目的化する。</div>
+  </section>
+
+  <!-- 04 切り口の引き出し -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">04</span><h2>切り口の引き出し</h2><span class="tag">FRAMES</span></div>
+    <p class="lede">切り口はゼロから作らず、既製フレームを借りると速い。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>フレーム</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td><b>3C</b>（自社・競合・顧客）</td><td>事業環境の整理</td></tr>
+          <tr><td><b>4P</b>（Product/Price/Place/Promotion）</td><td>施策の検討</td></tr>
+          <tr><td><b>SWOT</b>（強み/弱み/機会/脅威）</td><td>戦略の方向づけ</td></tr>
+          <tr><td><b>5W1H</b></td><td>事実整理・要件の輪郭</td></tr>
+          <tr><td><b>As-Is / To-Be</b></td><td>現状と理想の差を出す</td></tr>
+          <tr><td><b>緊急度 × 重要度</b></td><td>優先順位づけ</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>注意：</b>フレームは「思考の補助線」。<b>当てはめ自体が目的化</b>しないように。論点に合う切り口だけ使う。</div>
+  </section>
+
+  <!-- 05 空雨傘 -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">05</span><h2>空・雨・傘（事実→解釈→打ち手）</h2><span class="tag">FACT→ACT</span></div>
+    <p class="lede">観察を、結論や行動に<b>短絡させない</b>ための型。3段を分けて書く。</p>
+    <div class="kau">
+      <div class="step s1">
+        <div class="kh"><span class="kanji">空</span><span class="klabel"><b>事実</b><span>FACT</span></span></div>
+        <div class="kb">観測された事実だけ。主観を入れない。<br><em>例: CV率が先月比 −20%。</em></div>
+      </div>
+      <div class="step s2">
+        <div class="kh"><span class="kanji">雨</span><span class="klabel"><b>解釈</b><span>INTERPRETATION</span></span></div>
+        <div class="kb">事実からの読み・推定。「〜と思われる」。<br><em>例: フォーム改修の影響と推測。</em></div>
+      </div>
+      <div class="step s3">
+        <div class="kh"><span class="kanji">傘</span><span class="klabel"><b>打ち手</b><span>ACTION</span></span></div>
+        <div class="kb">だからどうする。具体的な行動。<br><em>例: 改修を一部戻して再計測。</em></div>
+      </div>
+    </div>
+    <div class="note r"><b>肝：</b>事実と解釈を<b>混ぜない</b>。混ざると相手が判断できず、結論の押し付けになる。エスカレーション・報告文書もこの3段で組むと通る。</div>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <div class="gband rv"><span class="gn">PART 2</span><h3>伝える（伝え方の型）</h3><span class="line"></span></div>
+
+  <!-- 06 ピラミッド -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">06</span><h2>ピラミッド構造 ― 積む</h2><span class="tag">STACK</span></div>
+    <p class="lede">結論を頂点に、根拠を下に積む（バーバラ・ミント）。縦は「なぜ?→だから」、横は同レベルで MECE。</p>
+    <div class="pyramid">
+      <div class="ptier t1"><div class="pbox">結論（言いたいこと）</div></div>
+      <div class="ptier t2"><div class="pbox">根拠 1</div><div class="pbox">根拠 2</div><div class="pbox">根拠 3</div></div>
+      <div class="ptier t3"><div class="pbox">事実・データ（根拠を支える）</div></div>
+    </div>
+    <div class="paxes">
+      <span class="pax">縦の関係 ＝ <b>なぜ? ↕ だから</b></span>
+      <span class="pax">横の関係 ＝ <b>MECE（重複なく）</b></span>
+    </div>
+    <div class="note r"><b>「話が飛ぶ」の正体：</b>縦の論理ステップが抜けている状態。結論と根拠の間に、相手が思う「なぜ?」を<b>1段ずつ埋める</b>と飛ばなくなる。</div>
+  </section>
+
+  <!-- 07 SCQA -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">07</span><h2>SCQA ― 導入の型</h2><span class="tag">INTRO</span></div>
+    <p class="lede">文書・提案の<b>冒頭</b>で読み手を本題に着地させる型。ピラミッド構造（ミント）の導入部にあたり、頂点の結論へ滑らかに繋ぐ。</p>
+    <div class="code"><span class="k">S（状況）</span>  <span class="v">{共有された前提・事実}</span>
+<span class="k">C（複雑化）</span> <span class="v">{変化・問題・障害が起きた}</span>
+<span class="k">Q（問い）</span>  <span class="v">{だから何を考えるべきか}</span>
+<span class="k">A（答え）</span>  <span class="v">{結論＝これから述べること}</span></div>
+  </section>
+
+  <!-- 08 PREP -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">08</span><h2>PREP ― 話す / 短文の型</h2><span class="tag">TALK</span></div>
+    <p class="lede">会話・チャット・短い報告は<b>結論から</b>。これだけで伝わり方が変わる。</p>
+    <div class="code"><span class="k">P（結論）</span> <span class="v">{一番言いたいこと}</span>
+<span class="k">R（理由）</span> <span class="v">{なぜなら〜}</span>
+<span class="k">E（具体例）</span> <span class="v">{たとえば〜}</span>
+<span class="k">P（結論）</span> <span class="v">{だから〜}</span></div>
+  </section>
+
+  <!-- 09 アンチパターン -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">09</span><h2>アンチパターン</h2><span class="tag">PITFALLS</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">話が飛ぶ</div><div class="gd">結論と根拠の間の論理ステップが抜け。相手の「なぜ?」を1段ずつ埋める。</div></div>
+      <div class="gc"><div class="gt">結論が最後</div><div class="gd">前置きが長い。結論から(PREP)。</div></div>
+      <div class="gc"><div class="gt">切り口が重複</div><div class="gd">MECEでない。1つの軸で切る。</div></div>
+      <div class="gc"><div class="gt">事実と解釈の混在</div><div class="gd">空と雨が混ざると判断できない。分けて書く。</div></div>
+      <div class="gc"><div class="gt">論点ズレ</div><div class="gd">立派だが的外れ。先にイシューを確認。</div></div>
+      <div class="gc"><div class="gt">フレーム当てはめ病</div><div class="gd">埋めることが目的化。論点に効くものだけ。</div></div>
+    </div>
+  </section>
+
+  <!-- 10 系譜・出典 -->
+  <section class="acc-ink rv">
+    <div class="shead"><span class="num">10</span><h2>系譜・出典</h2><span class="tag">COLUMN / 読み物</span></div>
+    <p class="lede">どこ発か分かると腹落ちしやすい。ただし「〜とされる」レベルの<b>通説</b>も多い点は割り引いて。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>フレームワーク</th><th>発祥（とされる）</th><th>ひとこと</th></tr></thead>
+        <tbody>
+          <tr><td>ピラミッド構造 / SCQA / MECE</td><td>バーバラ・ミント（マッキンゼー）『考える技術・書く技術』</td><td>論理構成の古典。SCQAは導入部</td></tr>
+          <tr><td>空・雨・傘</td><td>マッキンゼー（日本支社発とも）※通説</td><td>英語では SCR。事実→解釈→行動</td></tr>
+          <tr><td>ロジックツリー</td><td>マッキンゼー系の問題解決技法</td><td>MECEと対で使う</td></tr>
+          <tr><td>イシューから始める</td><td>安宅和人『イシューからはじめよ』(2010)。源流はコンサルの仮説駆動</td><td>「解くべき問い」を先に</td></tr>
+          <tr><td>仮説思考</td><td>内田和成『仮説思考』(2006・BCG)</td><td>答えを仮置き→検証</td></tr>
+          <tr><td>3C</td><td>大前研一（マッキンゼー）</td><td>自社・競合・顧客</td></tr>
+          <tr><td>4P</td><td>E.J. マッカーシー(1960・マーケティング論)</td><td>マッキンゼー発ではない</td></tr>
+          <tr><td>SWOT</td><td>諸説（スタンフォード／A. ハンフリー説ほか）</td><td>出自は実は曖昧</td></tr>
+          <tr><td>5W1H</td><td>報道・修辞の古典（Five Ws）</td><td>ビジネス専売ではない</td></tr>
+          <tr><td>緊急度 × 重要度</td><td>アイゼンハワー・マトリクス</td><td>米大統領アイゼンハワー由来</td></tr>
+          <tr><td>PREP</td><td>諸説（プレゼン／ビジネス文章の定番技法・確たる出典は不明）</td><td>結論先行の話法</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>読み方：</b>多くは“通説”で、厳密な初出が曖昧なものもある。フレームは<b>出自より「使える切り口か」で選ぶ</b>のが実用的。</div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">思考の型 1枚まとめ</div>
+    <div class="fs">迷ったらここに戻る</div>
+    <div class="checks">
+      <div class="chk"><b>論点</b>を先に（イシュー・仮説）</div>
+      <div class="chk"><b>MECE</b>に分ける（1つの軸）</div>
+      <div class="chk"><b>事実→解釈→打ち手</b>を分ける（空雨傘）</div>
+      <div class="chk"><b>結論から</b>積む（ピラミッド/PREP）</div>
+      <div class="chk"><b>縦の論理</b>を飛ばさない</div>
+      <div class="chk"><b>切り口</b>は借りる（3C等）</div>
+    </div>
+    <p class="conc">結論：<b>「話が飛ぶ」の正体は、縦の論理ステップ抜けと論点ズレ。</b>論点を先に・MECEに・結論から、で大半は直る。</p>
+  </div>
+
+  <footer>思考の型 ― framework series — checked 2026-06-12 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(block){
+    var text = block.innerText;
+    var btn = document.createElement('button');
+    btn.className = 'copybtn'; btn.type = 'button'; btn.textContent = 'copy';
+    function done(){ btn.textContent='copied!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='copy'; btn.classList.remove('done'); }, 1300); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='手動で選択'; }
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }catch(e){ fallback(); }
+    });
+    block.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>要件定義の型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:730px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:730px;}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--green-bg);}.mode.m2{background:var(--blue-bg);}.mode.m3{background:var(--purple-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
+  .mode.m1 .en{color:var(--green);}.mode.m2 .en{color:var(--blue);}.mode.m3 .en{color:var(--purple);}
+  .mode .jp{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.15;margin:7px 0 6px;}
+  .mode .q{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
+  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
+  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .tok{font-family:var(--mono);font-weight:700;font-size:12px;padding:6px 10px;border:2px solid #fff;color:#fff;}
+  .tok.g{border-color:var(--green);color:#6fe3b6;}.tok.b{border-color:var(--blue);color:#9fb0ff;}.tok.p{border-color:var(--purple);color:#c9a4ff;}.tok.y{border-color:var(--yellow);color:var(--yellow);}
+  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
+
+  section{padding:50px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
+
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+  .pill{font-family:var(--mono);font-weight:700;font-size:11px;padding:2px 8px;border:2px solid var(--ink);white-space:nowrap;display:inline-block;}
+  .pill.must{background:var(--red);color:#fff;border-color:var(--red);}
+  .pill.should{background:var(--yellow);}
+  .pill.could{background:var(--green-bg);}
+  .pill.wont{background:#eee;color:var(--muted);}
+
+  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
+    font-family:var(--mono);font-size:12.5px;line-height:1.9;padding:32px 17px 15px;margin:12px 0 16px;overflow-x:auto;white-space:pre-wrap;}
+  .code .k{color:#7fd6ff;font-weight:700;}.code .v{color:#ffd84d;}.code .c{color:#7c8597;}
+  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s;}
+  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
+  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px;margin:12px 0 14px;}
+  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
+  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:4px;}
+  .gc .gd{font-size:12.5px;color:#333;line-height:1.6;}
+  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
+  .note.r{border-left-color:var(--red);background:var(--red-bg);}
+  .note b{font-weight:700;}.note code{font-family:var(--mono);font-weight:700;background:#fff;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
+  .chk{border:2px solid #444;padding:11px 13px;font-size:13px;line-height:1.5;}
+  .chk b{color:var(--yellow);}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.code,.final,.note,.shead .num{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; REQUIREMENTS / FRAMEWORK</span>
+    <span>要件定義 ― CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">要件定義</span>の型<span class="dot">.</span></h1>
+    <p class="sub">業務 → 機能 → 非機能 を曖昧さなく固める</p>
+    <p class="thesis"><b>要件の曖昧さは、そのまま後工程の手戻りになる。</b>先に「スコープ・優先度・完了条件」を決める。</p>
+    <p class="lead">フレームワーク（MoSCoW・ユーザーストーリー/INVEST・非機能分類・Given-When-Then）を1枚に。ベンダー依頼・社内実装どちらの起点にも。</p>
+  </header>
+
+  <!-- 3 LAYERS -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">BUSINESS</div>
+      <div class="jp">業務要件</div>
+      <div class="q">なぜ / 誰の課題</div>
+      <div class="desc">解決したい課題・目的・効果。これが全ての土台。ここがブレると全部ブレる。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">FUNCTIONAL</div>
+      <div class="jp">機能要件</div>
+      <div class="q">何をするか</div>
+      <div class="desc">システムが提供する振る舞い。ユーザーストーリーと受け入れ条件で表す。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">NON-FUNCTIONAL</div>
+      <div class="jp">非機能要件</div>
+      <div class="q">どの品質で</div>
+      <div class="desc">性能・可用性・セキュリティ等。落とすと本番事故。数値で定義する。</div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow rv">
+    <div class="flabel">要件定義の流れ</div>
+    <div class="seq">
+      <span class="tok g">目的(なぜ)</span><span class="arr">→</span>
+      <span class="tok g">As-Is / To-Be</span><span class="arr">→</span>
+      <span class="tok b">スコープ</span><span class="arr">→</span>
+      <span class="tok b">機能(ストーリー)</span><span class="arr">→</span>
+      <span class="tok p">非機能</span><span class="arr">→</span>
+      <span class="tok y">優先度(MoSCoW)</span><span class="arr">→</span>
+      <span class="tok b">受け入れ条件</span>
+    </div>
+  </div>
+
+  <!-- 01 3層 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">01</span><h2>3層で捉える</h2><span class="tag">LAYERS</span></div>
+    <p class="lede">要件は3層。上の層が下の層の理由になる。<b>「なぜ」から降ろす</b>のが原則。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>層</th><th>答える問い</th><th>成果物の例</th></tr></thead>
+        <tbody>
+          <tr><td><b>業務要件</b></td><td>なぜやる？ 誰の何の課題を解く？</td><td>目的・KGI/KPI・対象業務・効果</td></tr>
+          <tr><td><b>機能要件</b></td><td>何ができればいい？</td><td>ユーザーストーリー・画面・処理・データ</td></tr>
+          <tr><td><b>非機能要件</b></td><td>どの品質で動けばいい？</td><td>性能・可用性・セキュリティ等の数値目標</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 02 目的 -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">02</span><h2>目的と背景を固める</h2><span class="tag">WHY</span></div>
+    <p class="lede">最初に「なぜ」を言語化。ここが弱いと、機能の取捨選択ができなくなる。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">5W1H で輪郭</div><div class="gd">Why(目的) / Who(対象) / What(課題) / When(時期) / Where(範囲) / How(手段の方向性)。</div></div>
+      <div class="gc"><div class="gt">As-Is → To-Be</div><div class="gd">現状の問題（As-Is）と、ありたい姿（To-Be）。その<b>差分</b>が要件になる。</div></div>
+      <div class="gc"><div class="gt">効果を測れる形に</div><div class="gd">「改善する」ではなく「離脱率を○%下げる」。KGI/KPIで成否を判定可能に。</div></div>
+    </div>
+    <div class="note"><b>コツ：</b>「解決策」ではなく「課題」を書く。<code>Reactで作る</code>は手段。要件は<code>○○が△秒でできること</code>のように<b>達成状態</b>で書く。</div>
+  </section>
+
+  <!-- 03 スコープ -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">03</span><h2>スコープ定義（やる / やらない）</h2><span class="tag">SCOPE</span></div>
+    <p class="lede">最大の防衛ライン。<b>「やらないこと」を明記</b>するのが、スコープクリープ対策。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>項目</th><th>書くこと</th></tr></thead>
+        <tbody>
+          <tr><td><b>In（やる）</b></td><td>今回の対象機能・対象範囲・対象ユーザー</td></tr>
+          <tr><td><b>Out（やらない）</b></td><td>今回は対象外。誤解を防ぐため明示的に書く</td></tr>
+          <tr><td><b>前提</b></td><td>成立の条件（既存API継続・データ移行済み 等）</td></tr>
+          <tr><td><b>制約</b></td><td>予算・期限・技術・法令・体制の縛り</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note r"><b>ベンダー依頼の肝：</b>In/Out が曖昧だと見積りも責任分界も割れる。「○○は今回Out」と書くだけで、後の「言った言わない」を大幅に減らせる。</div>
+  </section>
+
+  <!-- 04 機能要件 -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">04</span><h2>機能要件（ユーザーストーリー）</h2><span class="tag">FUNCTIONAL</span></div>
+    <p class="lede">「誰が・何を・なぜ」で書くと、価値が消えない。受け入れ条件とセットで。</p>
+    <div class="code"><span class="c"># ユーザーストーリー</span>
+<span class="k">As a</span>   <span class="v">〈役割 / ペルソナ〉</span>
+<span class="k">I want</span> <span class="v">〈機能・行動〉</span>
+<span class="k">so that</span> <span class="v">〈得たい価値・目的〉</span>
+
+<span class="c"># 受け入れ条件（Given-When-Then）</span>
+<span class="k">Given</span> <span class="v">〈前提・状態〉</span>
+<span class="k">When</span>  <span class="v">〈操作・イベント〉</span>
+<span class="k">Then</span>  <span class="v">〈期待される結果〉</span></div>
+    <div class="note"><b>INVEST（良いストーリーの条件）：</b><b>I</b>ndependent 独立 / <b>N</b>egotiable 交渉余地 / <b>V</b>aluable 価値がある / <b>E</b>stimable 見積れる / <b>S</b>mall 小さい / <b>T</b>estable テスト可能。大きすぎる物語は分割する。</div>
+  </section>
+
+  <!-- 05 非機能 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">05</span><h2>非機能要件（品質の軸）</h2><span class="tag">NON-FUNCTIONAL</span></div>
+    <p class="lede">忘れられがちで、落ちると本番事故になる。<b>各軸に必ず数値目標</b>を。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>軸</th><th>決めること（例）</th></tr></thead>
+        <tbody>
+          <tr><td><b>性能・拡張性</b></td><td>応答時間（例: 2秒以内）/ 同時接続 / ピーク / 将来の増加見込み</td></tr>
+          <tr><td><b>可用性</b></td><td>稼働率（例: 99.9%）/ 障害時の復旧目標（RTO/RPO）/ メンテ窓</td></tr>
+          <tr><td><b>セキュリティ</b></td><td>認証・権限 / 暗号化 / 脆弱性対応 / 個人情報・法令対応</td></tr>
+          <tr><td><b>運用・保守性</b></td><td>監視・ログ / バックアップ / デプロイ / 障害対応フロー</td></tr>
+          <tr><td><b>移行性</b></td><td>既存データ移行 / 旧URLのリダイレクト / 切替方式・切り戻し</td></tr>
+          <tr><td><b>互換・ユーザビリティ</b></td><td>対応ブラウザ・端末 / アクセシビリティ / 多言語</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note r"><b>禁句を数値に：</b>「速い」→「2秒以内」、「大量」→「同時1万」、「適宜」→条件を明記。曖昧語のまま通すと、検収で必ず揉める。</div>
+  </section>
+
+  <!-- 06 優先度 -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">06</span><h2>優先度（MoSCoW）</h2><span class="tag">PRIORITY</span></div>
+    <p class="lede">全部を同時にはできない。<b>4段階で仕分け</b>、Must を絞るほど計画が締まる。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>区分</th><th>意味</th><th>判断</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill must">Must</span></td><td>無いと成立しない（必須）</td><td>満たせなければリリース不可</td></tr>
+          <tr><td><span class="pill should">Should</span></td><td>重要だが代替・延期が可能</td><td>余裕があれば今回</td></tr>
+          <tr><td><span class="pill could">Could</span></td><td>あると嬉しい</td><td>工数が余れば</td></tr>
+          <tr><td><span class="pill wont">Won't</span></td><td>今回はやらない（明示）</td><td>次回以降。スコープ防衛</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>目安：</b>全部 Must にしない。Must は<b>工数の6割程度</b>までに抑える（DSDM由来の目安）。残りに調整余地があると炎上しにくい。</div>
+  </section>
+
+  <!-- 07 完了条件 -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">07</span><h2>完了条件 &amp; トレーサビリティ</h2><span class="tag">DONE</span></div>
+    <p class="lede">「終わり」を先に決める。要件は ID で追えるようにし、変更は記録する。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">受け入れ条件＝完了の定義</div><div class="gd">各要件に「これが満たされたら完了」を Given-When-Then で。検収・テストの根拠になる。</div></div>
+      <div class="gc"><div class="gt">要件ID で追跡</div><div class="gd"><code>REQ-001</code> のようにIDを振り、設計・実装・テストに紐づける。抜け漏れが見える。</div></div>
+      <div class="gc"><div class="gt">変更管理</div><div class="gd">途中の要件変更は「いつ・誰が・なぜ」を記録。スコープと優先度を再評価する。</div></div>
+    </div>
+  </section>
+
+  <!-- 08 アンチパターン -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">08</span><h2>アンチパターン</h2><span class="tag">PITFALLS</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">曖昧語を放置</div><div class="gd">「速い・適宜・柔軟に」。数値・条件に落とす。</div></div>
+      <div class="gc"><div class="gt">手段を要件にする</div><div class="gd">「Reactで」ではなく「○○できること」。手段は設計で決める。</div></div>
+      <div class="gc"><div class="gt">全部 Must</div><div class="gd">優先度が無い＝調整不能。仕分けを必ず。</div></div>
+      <div class="gc"><div class="gt">非機能の抜け</div><div class="gd">性能・可用性・移行・セキュリティの欠落は本番事故に直結。</div></div>
+      <div class="gc"><div class="gt">受け入れ条件が無い</div><div class="gd">「終わり」が未定義＝検収で揉める。</div></div>
+      <div class="gc"><div class="gt">Out を書かない</div><div class="gd">やらないことが曖昧＝スコープが膨張する。</div></div>
+    </div>
+  </section>
+
+  <!-- 09 ワークスルー -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">09</span><h2>記入例（ワークスルー）</h2><span class="tag">EXAMPLE</span></div>
+    <p class="lede">1つの要件を最初から最後まで通すと、各フレームワークの繋がりが見える。題材: <b>主要LPの問い合わせフォーム改善</b>。※数値は説明用の架空例です。</p>
+    <div class="code"><span class="c"># 題材: 主要LPの問い合わせフォーム改善</span>
+
+<span class="k">【目的(なぜ)】</span>
+  問い合わせ完了率が低い(現状 12%)。離脱を減らしCVを増やす。
+  効果指標: フォーム完了率 <span class="v">12% → 18%</span>
+
+<span class="k">【As-Is → To-Be】</span>
+  As-Is: 入力項目が多くスマホで離脱。エラーで最初からやり直し。
+  To-Be: 項目を最小化・入力途中保存・その場でエラー表示。
+
+<span class="k">【スコープ】</span>
+  In : 入力項目の見直し / インラインバリデーション / スマホ最適化
+  Out: 会員登録機能 / CRM連携の改修（今回は Won't）
+  前提: 既存の送信APIは継続利用
+  制約: 既存トンマナ踏襲 / 6月末まで
+
+<span class="k">【機能要件（ユーザーストーリー）】</span>
+  As a   スマホで見ている見込み客
+  I want 必須項目だけで素早く送りたい
+  so that 途中で諦めずに問い合わせできる
+
+  受け入れ条件:
+  Given 必須項目が未入力のまま
+  When  送信ボタンを押す
+  Then  該当項目にその場でエラー表示、入力済みは保持
+
+<span class="k">【非機能要件（抜粋）】</span>
+  性能      : フォーム表示 2秒以内 / 送信応答 1秒以内
+  可用性    : 営業時間帯の稼働率 99.9%
+  セキュリティ: 通信はTLS / 個人情報は保存せずAPI転送のみ
+  互換      : iOS・Android 最新2世代 / Safari・Chrome
+
+<span class="k">【優先度（MoSCoW）】</span>
+  Must   : 必須項目の最小化 / インラインバリデーション
+  Should : 入力途中の保存
+  Could  : 住所自動補完
+  Won't  : CRM連携の改修</div>
+  </section>
+
+  <!-- 10 目次テンプレ -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">10</span><h2>要件定義書の目次テンプレ</h2><span class="tag">TEMPLATE</span></div>
+    <p class="lede">そのまま“書く成果物”の雛形。コピーして各章を埋めれば要件定義書になる。</p>
+    <div class="code"><span class="c"># 要件定義書（テンプレ）</span>
+<span class="k">0.</span> 概要 / 改訂履歴
+<span class="k">1.</span> 目的・背景         なぜ・誰の課題・効果指標(KGI/KPI)
+<span class="k">2.</span> スコープ           In / Out / 前提 / 制約
+<span class="k">3.</span> 機能要件           ユーザーストーリー + 受け入れ条件（要件IDを振る）
+<span class="k">4.</span> 非機能要件         性能 / 可用性 / セキュリティ / 運用 / 移行 / 互換（数値目標）
+<span class="k">5.</span> 優先度(MoSCoW)     Must / Should / Could / Won't
+<span class="k">6.</span> 制約・前提・リスク  予算 / 期限 / 技術 / 法令 / 体制
+<span class="k">7.</span> 用語定義           関係者で言葉を揃える
+<span class="k">8.</span> 関連資料 / 参照     既存仕様・チケット・議事録</div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">要件定義 1枚チェック</div>
+    <div class="fs">これが言えたら要件は固まっている</div>
+    <div class="checks">
+      <div class="chk"><b>なぜ</b>やるか、効果は測れるか</div>
+      <div class="chk"><b>In / Out</b>が書いてあるか</div>
+      <div class="chk">機能は<b>誰の何の価値</b>か（ストーリー）</div>
+      <div class="chk">非機能に<b>数値目標</b>があるか</div>
+      <div class="chk">優先度を<b>MoSCoW</b>で仕分けたか</div>
+      <div class="chk">各要件に<b>受け入れ条件</b>があるか</div>
+    </div>
+    <p class="conc">結論：<b>スコープのIn/Outを書く・優先度はMoSCoW・完了は受け入れ条件で・曖昧語は数値化・手段でなく課題を書く。</b>この5つで、後工程の手戻りはぐっと減る。</p>
+  </div>
+
+  <footer>要件定義の型 ― framework series — checked 2026-06-12 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(block){
+    var text = block.innerText;
+    var btn = document.createElement('button');
+    btn.className = 'copybtn'; btn.type = 'button'; btn.textContent = 'copy';
+    function done(){ btn.textContent='copied!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='copy'; btn.classList.remove('done'); }, 1300); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='手動で選択'; }
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }catch(e){ fallback(); }
+    });
+    block.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

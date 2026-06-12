@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude / Claude Code ベストプラクティス チートシート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.2em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,19px);font-weight:700;line-height:1.6;margin-top:16px;max-width:720px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:720px;}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--green-bg);}
+  .mode.m2{background:var(--blue-bg);}
+  .mode.m3{background:var(--yellow-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.16em;}
+  .mode.m1 .en{color:var(--green);}
+  .mode.m2 .en{color:var(--blue);}
+  .mode.m3 .en{color:#7a6200;}
+  .mode .jp{font-family:var(--disp);font-weight:900;font-size:21px;line-height:1.15;margin:7px 0 8px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
+  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
+  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .tok{font-family:var(--mono);font-weight:700;font-size:13px;padding:6px 11px;border:2px solid #fff;color:#fff;}
+  .tok.g{border-color:var(--green);color:#6fe3b6;}
+  .tok.b{border-color:var(--blue);color:#9fb0ff;}
+  .tok.y{border-color:var(--yellow);color:var(--yellow);}
+  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
+
+  section{padding:50px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:20px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.13em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}
+  .acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}
+  .acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}
+  .acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-6px 0 18px;max-width:730px;}
+
+  /* PRIORITY LIST */
+  .plist{display:flex;flex-direction:column;gap:10px;margin:12px 0 14px;}
+  .pitem{display:flex;gap:13px;border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:12px 14px;align-items:flex-start;}
+  .pitem .pn{font-family:var(--mono);font-weight:700;font-size:13px;background:var(--blue);color:#fff;border:2px solid var(--blue);padding:3px 9px;flex-shrink:0;}
+  .pitem .pc{flex:1;}
+  .pitem .pt{font-weight:700;font-size:14px;}
+  .pitem .pd{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:2px;}
+  .pitem .pd code{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  /* CARD GRID */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:12px 0 14px;}
+  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
+  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:5px;display:flex;align-items:center;gap:8px;}
+  .gc .gt .b{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border:2px solid var(--ink);}
+  .acc-red .gc .gt .b{background:var(--red-bg);}
+  .acc-yellow .gc .gt .b{background:var(--yellow-bg);}
+  .gc .gd{font-size:12.5px;color:#333;line-height:1.65;}
+  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;white-space:nowrap;}
+
+  /* TABLE */
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:13px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 13px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11.5px;letter-spacing:.04em;white-space:nowrap;}
+  td{padding:10px 13px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td .pill{font-family:var(--mono);font-weight:700;font-size:11.5px;padding:2px 8px;border:2px solid var(--ink);white-space:nowrap;display:inline-block;}
+  .pill.op{background:var(--purple-bg);} .pill.so{background:var(--blue-bg);} .pill.ha{background:var(--green-bg);}
+
+  /* NOTE */
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:16px 0;font-size:13px;line-height:1.7;}
+  .note b{font-weight:700;}
+
+  /* LINKS */
+  .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:12px 0;}
+  .lk{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:12px 14px;}
+  .lk a{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--blue);text-decoration:underline;text-decoration-color:rgba(31,61,240,.4);text-underline-offset:2px;word-break:break-word;}
+  .lk a:hover{text-decoration-color:var(--blue);}
+  .lk .ld{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.55;}
+  .lk .off{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.08em;color:#fff;background:var(--green);padding:1px 6px;border:1px solid var(--ink);margin-left:6px;}
+  .lk .com{background:var(--muted);}
+
+  /* FINAL */
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+  .rule{border:2px solid #444;padding:12px 13px;}
+  .rule .rk{font-family:var(--mono);font-weight:700;font-size:22px;color:var(--yellow);}
+  .rule .rt{font-size:13px;font-weight:700;margin-top:4px;}
+  .rule .rd{font-size:11.5px;color:#bdbdbd;margin-top:2px;line-height:1.5;}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid,.links{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.pitem,.lk,.final,.note,.shead .num{box-shadow:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; CLAUDE / WAYS OF WORKING</span>
+    <span>BEST PRACTICES — CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">Claude</span>の作法<span class="dot">.</span></h1>
+    <p class="sub">Claude / Claude Code ベストプラクティス</p>
+    <p class="thesis"><b>コンテキストは埋まるほど性能が落ちる。</b>多くの作法は、この一点から来ている。</p>
+    <p class="lead">だから「計画してから」「文脈は軽く」「難度に合わせる」が効く。以下は公式ドキュメントの芯を1枚に圧縮したもの（出典は末尾）。</p>
+  </header>
+
+  <!-- CORE MANTRAS -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">PLAN FIRST</div>
+      <div class="jp">計画してから実装</div>
+      <div class="desc">まず Plan モード。計画を読んでから動かす。本番コードを“勢い”で書かない。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">KEEP CONTEXT LIGHT</div>
+      <div class="jp">文脈は軽く保つ</div>
+      <div class="desc">こまめに圧縮、切り替えはリセット。文脈の劣化が最大の失敗モード。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">SIMPLE &gt; COMPLEX</div>
+      <div class="jp">単純が強い</div>
+      <div class="desc">凝った多エージェントより単純な制御ループ。役割は小さく、人がレビュー席に。</div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow rv">
+    <div class="flabel">高品質な1サイクル</div>
+    <div class="seq">
+      <span class="tok b">探索</span><span class="arr">→</span>
+      <span class="tok g">計画 (Plan)</span><span class="arr">→</span>
+      <span class="tok g">計画をレビュー</span><span class="arr">→</span>
+      <span class="tok b">実装</span><span class="arr">→</span>
+      <span class="tok b">テストで検証</span><span class="arr">→</span>
+      <span class="tok y">/clear</span>
+    </div>
+  </div>
+
+  <!-- 01 プロンプト -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">01</span><h2>プロンプトの原則</h2><span class="tag">PROMPTING</span></div>
+    <p class="lede">公式の現行リファレンス（Prompting best practices）の技法を実務で効く形に整理。AI は“文脈ゼロの優秀な新人”だと思って書く。</p>
+    <div class="plist">
+      <div class="pitem"><span class="pn">1</span><div class="pc"><div class="pt">明確・具体・直接的に</div><div class="pd">曖昧さを消す。何を・どの形で欲しいかを正確に。やってほしいことを言う（「〜するな」より「〜して」）。</div></div></div>
+      <div class="pitem"><span class="pn">2</span><div class="pc"><div class="pt">文脈と「なぜ」を渡す</div><div class="pd">目的・制約・背景を添える。理由が分かると狙い通りに動きやすい。</div></div></div>
+      <div class="pitem"><span class="pn">3</span><div class="pc"><div class="pt">例を見せる（multishot）</div><div class="pd">形式や概念は例で示すのが一番速い。最新モデルは例の細部までよく見る。</div></div></div>
+      <div class="pitem"><span class="pn">4</span><div class="pc"><div class="pt">考えさせる</div><div class="pd">難しい推論は思考させてから答えさせる。今は<b>思考モード（現行世代は adaptive thinking）が手動の「順を追って」より基本的に有効</b>。仕様は世代で変わるので現行は公式で確認。</div></div></div>
+      <div class="pitem"><span class="pn">5</span><div class="pc"><div class="pt">XML タグで構造化</div><div class="pd">Claude は <code>&lt;instructions&gt;</code> <code>&lt;context&gt;</code> <code>&lt;examples&gt;</code> のような区切りに強い。複雑な指示で効く。</div></div></div>
+      <div class="pitem"><span class="pn">6</span><div class="pc"><div class="pt">役割を与える / 形式を指定</div><div class="pd">立場（system）で口調と範囲を決める。出力形式（JSON/Markdown等）も明示。役割は盛りすぎない。</div></div></div>
+      <div class="pitem"><span class="pn">7</span><div class="pc"><div class="pt">長文は指示を後ろ / 複雑は分割</div><div class="pd">長い入力は指示を末尾に置くと拾われやすい。大きな課題はプロンプトチェーンで小分けに。</div></div></div>
+    </div>
+  </section>
+
+  <!-- 02 Plan -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">02</span><h2>まず計画（Plan → 実装）</h2><span class="tag">PLAN</span></div>
+    <p class="lede">どの一次情報も「実装前の計画」を非交渉の前提に挙げている。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">Plan モードで入る</div><div class="gd"><code>Shift + Tab</code> で Plan に。まず計画を出させ、人が読んでから実行に移す。いきなり書かせない。</div></div>
+      <div class="gc"><div class="gt">探索 → 計画 → 実装 → コミット</div><div class="gd">先にコードを探索・把握させ、計画を立て、それから書く。順番が品質を決める。</div></div>
+      <div class="gc"><div class="gt">計画は“残す”</div><div class="gd">書いた計画・設計判断はファイルに残す（living plan / dev docs）。後続セッションの文脈になる。</div></div>
+      <div class="gc"><div class="gt">本番は vibe coding しない</div><div class="gd">使い捨てなら勢いでも可。本番コードは構造化した思考・検証・ドキュメントが要る。</div></div>
+    </div>
+  </section>
+
+  <!-- 03 モデル×思考量 -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">03</span><h2>モデル × 思考量</h2><span class="tag">MODEL</span></div>
+    <p class="lede">難度にコストを合わせる。難しいほど“賢いモデル＋思考多め”、単純で大量なら“軽いモデル＋思考少なめ”。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>タスクの性質</th><th>目安モデル</th><th>思考量</th></tr></thead>
+        <tbody>
+          <tr><td>難しい設計・原因不明のデバッグ・アーキ判断</td><td><span class="pill op">Opus</span></td><td>多め（拡張思考オン）</td></tr>
+          <tr><td>日常の実装・リファクタ・レビュー</td><td><span class="pill so">Sonnet</span></td><td>標準</td></tr>
+          <tr><td>大量・定型・分類・要約などの軽作業</td><td><span class="pill ha">Haiku</span></td><td>少なめ</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>考え方：</b>思考モードは「効くが遅くて高い」。<b>難しい一手にだけ厚く</b>振り、定型では薄くする。<code>/model</code> で切替、思考量は <code>/effort</code> で上下。最上位ティアは Fable 5（思考は常時オン）。現行のモデル構成は公式で確認。</div>
+  </section>
+
+  <!-- 04 セッション -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">04</span><h2>セッションの重さ・移動</h2><span class="tag">CONTEXT</span></div>
+    <p class="lede">文脈の劣化が最大の失敗モード。重さを“見て・減らして・切り替える”を習慣に。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt"><span class="b">見る</span>残量を確認</div><div class="gd"><code>/context</code> で使用量を把握。埋まる前に動く。</div></div>
+      <div class="gc"><div class="gt"><span class="b">減らす</span>こまめに圧縮</div><div class="gd">長い作業は限界前に <code>/compact</code>。残す要点を引数で指定も可。</div></div>
+      <div class="gc"><div class="gt"><span class="b">切る</span>タスクが変わったら</div><div class="gd"><code>/clear</code> で新規。引きずらず作り直す方が結局速い。</div></div>
+      <div class="gc"><div class="gt"><span class="b">分ける</span>レビューは別セッション</div><div class="gd">新しい文脈は自分の書いたコードに肩入れしない。Writer / Reviewer を分ける。</div></div>
+      <div class="gc"><div class="gt"><span class="b">回す</span>大量作業は並列</div><div class="gd">移行・一括処理は <code>claude -p</code> をファイル単位でループ。権限は <code>--allowedTools</code> で絞る。</div></div>
+    </div>
+  </section>
+
+  <!-- 05 エージェント/スキル -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">05</span><h2>エージェント / スキル設計</h2><span class="tag">BUILD</span></div>
+    <p class="lede">「単純 &gt; 複雑」が大原則。賢く作るより、小さく・確実に・監査できる形に。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">まず単純な制御ループ</div><div class="gd">多エージェントの前に、低レベルツール（Bash/Read/Edit）＋必要な抽象だけ。凝った構成は最後の手段。</div></div>
+      <div class="gc"><div class="gt">スキルは description が命</div><div class="gd">発火するかは <b>name+description</b> で決まる。「何を・いつ使うか」を三人称で具体的に。最新世代は<b>強い言葉（MUST等）だと過発火する</b>ため断定調は避ける。</div></div>
+      <div class="gc"><div class="gt">progressive disclosure</div><div class="gd">本体 SKILL.md は小さく。詳細は別ファイルに分け、必要時だけ読ませる。多数入れても文脈を食わない設計。</div></div>
+      <div class="gc"><div class="gt">1スキル1役 / 手順は番号で</div><div class="gd">複雑な処理は番号付きの手順・チェックリストに。役割を絞ると壊れにくい。</div></div>
+      <div class="gc"><div class="gt">MCPツールは完全修飾名</div><div class="gd"><code>GitHub:create_issue</code> のようにサーバ接頭辞付きで。曖昧だと取り違える。</div></div>
+      <div class="gc"><div class="gt">信頼できる元のみ・監査</div><div class="gd">スキルは任意コードを実行し得る。自作 or Anthropic 由来を基本に、導入前に全ファイルを確認。</div></div>
+    </div>
+  </section>
+
+  <!-- 06 メモリ -->
+  <section class="acc-ink rv">
+    <div class="shead"><span class="num">06</span><h2>メモリ管理・棚卸（CLAUDE.md）</h2><span class="tag">MEMORY</span></div>
+    <p class="lede">CLAUDE.md は毎回読み込まれる“常駐コスト”。肥大は劣化に直結する。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">簡潔に保つ</div><div class="gd">スタック・コマンド・規約・“やってはいけない罠”を要点だけ。長文の説明書にしない。</div></div>
+      <div class="gc"><div class="gt">その場で足す / 編集する</div><div class="gd">気づきは「覚えて」と頼んで追記（auto memory）、整えるときは <code>/memory</code> で編集。</div></div>
+      <div class="gc"><div class="gt">プロジェクト用と個人用を分ける</div><div class="gd">リポ直下＝チーム共有、<code>~/.claude</code>＝自分用。共有物に個人設定を混ぜない。</div></div>
+      <div class="gc"><div class="gt">定期棚卸＝削除ファースト</div><div class="gd">増やすより消す。効いていない記述・古い規約は落とす。“追加して直らないなら構造を疑う”。</div></div>
+    </div>
+  </section>
+
+  <!-- 07 出典 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">07</span><h2>出典・もっと読む</h2><span class="tag">SOURCES</span></div>
+    <p class="lede">迷ったら一次情報へ。公式が芯、コミュニティが実践の肉付け。</p>
+    <div class="links">
+      <div class="lk"><a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener">Claude Code: Best practices</a><span class="off">公式</span><div class="ld">コンテキスト管理・計画・並列セッション。芯はここ（旧 Engineering ブログ記事もここに統合済み）。</div></div>
+      <div class="lk"><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener">Claude prompting best practices</a><span class="off">公式</span><div class="ld">プロンプト技法の“living reference”。01はここに準拠。</div></div>
+      <div class="lk"><a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">Building effective agents</a><span class="off">公式</span><div class="ld">「単純 &gt; 複雑」の原典。エージェント設計の考え方。</div></div>
+      <div class="lk"><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener">Agent Skills overview / authoring</a><span class="off">公式</span><div class="ld">SKILL.md・progressive disclosure・スキル作法。</div></div>
+      <div class="lk"><a href="https://claude.com/blog/how-claude-code-works-in-large-codebases-best-practices-and-where-to-start" target="_blank" rel="noopener">Claude Code in large codebases</a><span class="off">公式</span><div class="ld">大規模・エンタープライズ導入のパターン。</div></div>
+      <div class="lk"><a href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" rel="noopener">shanraisshan/claude-code-best-practice</a><span class="off com">コミュニティ</span><div class="ld">公式＋現場知見を1ページに集約。最も引用される統合版。</div></div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">5つの鉄則</div>
+    <div class="fs">迷ったらこれに戻る</div>
+    <div class="rules">
+      <div class="rule"><div class="rk">1</div><div class="rt">計画してから</div><div class="rd">Plan → レビュー → 実装</div></div>
+      <div class="rule"><div class="rk">2</div><div class="rt">文脈は軽く</div><div class="rd">/context → /compact → /clear</div></div>
+      <div class="rule"><div class="rk">3</div><div class="rt">難度に合わせる</div><div class="rd">モデルと思考量を上下</div></div>
+      <div class="rule"><div class="rk">4</div><div class="rt">迷ったら新規</div><div class="rd">レビューは別セッション</div></div>
+      <div class="rule"><div class="rk">5</div><div class="rt">単純を選ぶ</div><div class="rd">小さく・確実に・監査可能に</div></div>
+    </div>
+    <p class="conc">結局すべては <b>「コンテキストを軽く・役割を小さく・人がレビュー席に」</b>。これで“それっぽいデモ”でなく動くものが出る。</p>
+  </div>
+
+  <footer>Claude / Claude Code — best practices cheat sheet / distilled from official docs — checked 2026-06-11 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+</body>
+</html>

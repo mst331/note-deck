@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI出力のレビュー・検収の型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.15em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:740px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:740px;}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--red-bg);}.mode.m2{background:var(--purple-bg);}.mode.m3{background:var(--green-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
+  .mode.m1 .en{color:var(--red);}.mode.m2 .en{color:var(--purple);}.mode.m3 .en{color:var(--green);}
+  .mode .jp{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.15;margin:7px 0 8px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
+  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
+  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .tok{font-family:var(--mono);font-weight:700;font-size:12px;padding:6px 10px;border:2px solid #fff;color:#fff;}
+  .tok.r{border-color:var(--red);color:#ff9b92;}.tok.b{border-color:var(--blue);color:#9fb0ff;}.tok.p{border-color:var(--purple);color:#c9a4ff;}.tok.g{border-color:var(--green);color:#6fe3b6;}.tok.y{border-color:var(--yellow);color:var(--yellow);}
+  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
+
+  section{padding:50px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
+
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
+    font-family:var(--mono);font-size:12.5px;line-height:1.9;padding:32px 17px 15px;margin:12px 0 16px;overflow-x:auto;white-space:pre-wrap;}
+  .code .k{color:#7fd6ff;font-weight:700;}.code .v{color:#ffd84d;}.code .c{color:#7c8597;}.code .e{color:#9fe6b8;}
+  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s;}
+  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
+  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:12px 0 14px;}
+  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
+  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:4px;}
+  .gc .gd{font-size:12.5px;color:#333;line-height:1.6;}
+  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
+  .note.r{border-left-color:var(--red);background:var(--red-bg);}
+  .note.b{border-left-color:var(--blue);background:var(--blue-bg);}
+  .note b{font-weight:700;}.note code{font-family:var(--mono);font-weight:700;background:#fff;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;}
+  .chk{border:2px solid #444;padding:11px 13px;font-size:13px;line-height:1.5;}
+  .chk b{color:var(--yellow);}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+  .final .link{margin-top:12px;font-size:12.5px;color:#bdbdbd;line-height:1.7;}
+  .final .link b{color:#fff;}
+
+  a.xref{color:var(--blue);font-weight:700;text-decoration:underline;text-decoration-color:rgba(31,61,240,.4);text-underline-offset:2px;}
+  a.xref:hover{text-decoration-color:var(--blue);}
+  .final a.xref{color:#ffd84d;text-decoration-color:rgba(255,216,77,.5);}
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.code,.final,.note,.shead .num{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; AI OUTPUT REVIEW / FRAMEWORK</span>
+    <span>レビュー・検収 ― CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">AI出力</span>のレビュー・検収の型<span class="dot">.</span></h1>
+    <p class="sub">確かめてから採用する</p>
+    <p class="thesis"><b>流暢さは、正しさではない。</b>目的適合・事実・安全を観点で確かめ、受け入れ基準で検収してから採用する。</p>
+    <p class="lead"><a class="xref" href="ai_delegation_cheatsheet.html">「任せる線引き」</a>の片割れ。任せた出力を“感想文レビュー”で通さず、観点で見て、独立した手段で裏取りし、要件の受け入れ条件で判定する。</p>
+  </header>
+
+  <!-- CORE -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">DON'T TRUST FLUENCY</div>
+      <div class="jp">流暢さで信じない</div>
+      <div class="desc">なめらかで自信ありげでも、正しいとは限らない。口調と正確さは無関係。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">VERIFY</div>
+      <div class="jp">裏取りで確かめる</div>
+      <div class="desc">出典・再現・別手段で検証。重要なほど厳しく。同じAIに聞くだけでは弱い。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">ACCEPT BY CRITERIA</div>
+      <div class="jp">基準で検収</div>
+      <div class="desc">要件の受け入れ条件で判定。採用 / 修正 / 却下を人が決める。</div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow rv">
+    <div class="flabel">レビュー・検収の流れ</div>
+    <div class="seq">
+      <span class="tok r">受け取る</span><span class="arr">→</span>
+      <span class="tok b">観点でレビュー</span><span class="arr">→</span>
+      <span class="tok p">裏取り・再現</span><span class="arr">→</span>
+      <span class="tok y">受け入れ基準で検収</span><span class="arr">→</span>
+      <span class="tok g">採用 / 修正 / 却下</span>
+    </div>
+  </div>
+
+  <!-- 01 大前提 -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">01</span><h2>大前提：流暢さ ≠ 正しさ</h2><span class="tag">WHY</span></div>
+    <p class="lede">AI出力は読みやすく、自信ありげ。だからこそ<b>誤りが見えにくい</b>。検証は“疑い”から始める。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">もっともらしい誤り</div><div class="gd">事実・数値・出典を、自然な文章で“それっぽく”誤る（ハルシネーション）。</div></div>
+      <div class="gc"><div class="gt">自信 ≠ 正しさ</div><div class="gd">断定口調でも間違える。口調の強さは正確さの根拠にならない。</div></div>
+      <div class="gc"><div class="gt">文脈の取りこぼし</div><div class="gd">暗黙の前提・社内事情・最新状況を外す。指示にない所を勝手に補う。</div></div>
+      <div class="gc"><div class="gt">部分最適</div><div class="gd">局所は正しいが、全体の目的・整合からズレることがある。</div></div>
+    </div>
+  </section>
+
+  <!-- 02 共通観点 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">02</span><h2>レビュー観点（共通）</h2><span class="tag">CHECKLIST</span></div>
+    <p class="lede">毎回<b>同じ観点</b>で見る。観点を固定すると、見落としと“感想文化”を防げる。</p>
+    <div class="code"><span class="c"># AI出力レビュー観点（共通）</span>
+<span class="k">□ 目的適合</span>  依頼の目的・要件に合っているか
+<span class="k">□ 事実・数値</span> 固有名詞 / 数字 / 引用 / URL は裏取りしたか
+<span class="k">□ 論理</span>     筋が通っているか・飛びはないか
+<span class="k">□ 完成度</span>   抜け・例外・エッジケースの考慮はあるか
+<span class="k">□ 安全・権限</span> 機密 / 権限 / セキュリティ上の問題はないか
+<span class="k">□ スタイル</span>  読み手・形式・トーンに合っているか</div>
+  </section>
+
+  <!-- 03 タイプ別 -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">03</span><h2>出力タイプ別の観点</h2><span class="tag">BY TYPE</span></div>
+    <p class="lede">出力の種類で、特に警戒する所が変わる。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>出力</th><th>特に見る所</th></tr></thead>
+        <tbody>
+          <tr><td><b>文章</b></td><td>事実誤り / 誇張・断定 / 構成の筋 / 読み手への適合</td></tr>
+          <tr><td><b>コード</b></td><td>動くか（実行）/ 仕様整合 / エッジケース / セキュリティ / 依存・環境差分</td></tr>
+          <tr><td><b>調査・事実</b></td><td>出典の有無と質 / 一次情報か / 情報の古さ / 数値の裏取り</td></tr>
+          <tr><td><b>要約</b></td><td>重要点の欠落 / 歪曲・誇張 / 原文にない追加</td></tr>
+          <tr><td><b>翻訳</b></td><td>誤訳 / ニュアンス / 用語の一貫性</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 04 検証方法 -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">04</span><h2>検証の方法</h2><span class="tag">VERIFY</span></div>
+    <p class="lede">「読んで納得」は検証ではない。<b>外部の事実・実行</b>で確かめる。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">出典で裏取り</div><div class="gd">一次情報・公式に当たる。AIが示した出典も、実在するか開いて確認。</div></div>
+      <div class="gc"><div class="gt">自分で再現</div><div class="gd">コードは実行、計算は検算。動かして確かめる。</div></div>
+      <div class="gc"><div class="gt">別手段でクロスチェック</div><div class="gd">検索・別AI・人。<b>独立した手段</b>で突き合わせる。</div></div>
+      <div class="gc"><div class="gt">重要度で強度を変える</div><div class="gd">影響が大きい・不可逆なほど厳しく。低リスクは軽く。</div></div>
+    </div>
+    <div class="note r"><b>落とし穴：</b>同じAIに「合ってる?」と聞くと「合ってます」と返りがち。<b>自己検証は補助</b>であって保証ではない。最終確認は独立した手段で。</div>
+  </section>
+
+  <!-- 05 ハルシネーション -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">05</span><h2>ハルシネーションの見分け</h2><span class="tag">RED FLAGS</span></div>
+    <p class="lede">特に“捏造されやすい”要素を知っておくと、警戒すべき所が分かる。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">固有名詞・数値・日付</div><div class="gd">もっともらしい捏造の定番。必ず裏取り。</div></div>
+      <div class="gc"><div class="gt">引用・URL・出典</div><div class="gd">存在しないものを作ることがある。開いて実在確認。</div></div>
+      <div class="gc"><div class="gt">API・関数・ライブラリ</div><div class="gd">存在しない/古いものを自信ありげに。ドキュメント確認・実行で検証。</div></div>
+      <div class="gc"><div class="gt">知識の境界</div><div class="gd">最新・ニッチ・社内固有は外しやすい。境界付近ほど疑う。</div></div>
+    </div>
+  </section>
+
+  <!-- 06 検収 -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">06</span><h2>検収（受け入れ基準）</h2><span class="tag">ACCEPT</span></div>
+    <p class="lede">レビューの最後は判定。<b>要件の受け入れ条件</b>で、採用/修正/却下を決める。</p>
+    <div class="code"><span class="c"># 検収（判定）</span>
+<span class="k">対象</span>       <span class="v">{AI出力}</span>
+<span class="k">受け入れ条件</span> <span class="v">{要件のDone・Given-When-Then}</span>
+<span class="k">判定</span>       採用 / 修正 / 却下
+<span class="k">理由</span>       <span class="v">{事実 / 論理 / 完成度 のどこか}</span>
+<span class="k">修正指示</span>   <span class="v">{どこを・なぜ・どうしてほしいか}</span></div>
+    <div class="note"><b>修正指示は具体的に：</b>「直して」でなく「<b>どこが・なぜ・どうしてほしい</b>」。受け入れ条件は<a class="xref" href="../framework/requirements_cheatsheet.html"><b>要件定義の型</b></a>の Done をそのまま使える。</div>
+  </section>
+
+  <!-- 07 仕組み化 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">07</span><h2>レビューを仕組みにする</h2><span class="tag">SYSTEM</span></div>
+    <p class="lede">毎回ブレないように、レビューを<b>個人技から仕組み</b>へ。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">観点を固定する</div><div class="gd">02のチェックリストを毎回使う。AIにレビューさせる時も観点を渡す。</div></div>
+      <div class="gc"><div class="gt">採用は人が承認</div><div class="gd">AIレビューは補助。最終的な「採用」の判断は人が持つ。</div></div>
+      <div class="gc"><div class="gt">検証を記録する</div><div class="gd">何を確認し、何を直したかを残す。後で追える＝品質が積み上がる。</div></div>
+      <div class="gc"><div class="gt">影響大は二重チェック</div><div class="gd">不可逆・高影響は、別の人/手段でもう一度。</div></div>
+    </div>
+  </section>
+
+  <!-- 08 アンチパターン -->
+  <section class="acc-ink rv">
+    <div class="shead"><span class="num">08</span><h2>アンチパターン</h2><span class="tag">PITFALLS</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">流暢だから採用</div><div class="gd">読みやすさ＝正しさではない。中身で見る。</div></div>
+      <div class="gc"><div class="gt">AIの自信を信用</div><div class="gd">断定でも裏取り。口調は根拠でない。</div></div>
+      <div class="gc"><div class="gt">一部だけ見て全体承認</div><div class="gd">冒頭OKで通す。抜けは後半・例外系に潜む。</div></div>
+      <div class="gc"><div class="gt">「いい感じです」レビュー</div><div class="gd">観点のない感想。固定観点で具体的に。</div></div>
+      <div class="gc"><div class="gt">同じAIに検証させて安心</div><div class="gd">独立した手段で。自己検証は補助。</div></div>
+      <div class="gc"><div class="gt">出典を確認せず引用</div><div class="gd">存在しないURL・論文も。開いて確かめる。</div></div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">検収 1枚チェック</div>
+    <div class="fs">採用する前にこれを問う</div>
+    <div class="checks">
+      <div class="chk">流暢さでなく<b>中身</b>で見たか</div>
+      <div class="chk">事実・数値・<b>出典を裏取り</b>したか</div>
+      <div class="chk">コードは<b>動かして</b>確かめたか</div>
+      <div class="chk"><b>受け入れ条件</b>で検収したか</div>
+      <div class="chk"><b>独立した手段</b>で検証したか</div>
+      <div class="chk">採用は<b>人</b>が判断したか</div>
+    </div>
+    <p class="conc">結論：<b>流暢さは正しさではない。観点で見て、独立した手段で裏取りし、受け入れ条件で検収する。</b>これが「任せる」の片割れ。</p>
+    <p class="link">つながり：任せる判断 → <a class="xref" href="ai_delegation_cheatsheet.html"><b>任せる線引き</b></a>｜ 受け入れ条件 → <a class="xref" href="../framework/requirements_cheatsheet.html"><b>要件定義の型</b></a>｜ 安全に動かす → <a class="xref" href="ai_harness_pitfalls_cheatsheet.html"><b>ハーネスの落とし穴</b></a>｜ 失敗の振り返り → <a class="xref" href="../framework/retrospective_cheatsheet.html"><b>振り返り・障害対応</b></a>。</p>
+  </div>
+
+  <footer>AI出力のレビュー・検収の型 ― 任せる → 動かす → 検証する — checked 2026-06-12 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(block){
+    var text = block.innerText;
+    var btn = document.createElement('button');
+    btn.className = 'copybtn'; btn.type = 'button'; btn.textContent = 'copy';
+    function done(){ btn.textContent='copied!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='copy'; btn.classList.remove('done'); }, 1300); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='手動で選択'; }
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }catch(e){ fallback(); }
+    });
+    block.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

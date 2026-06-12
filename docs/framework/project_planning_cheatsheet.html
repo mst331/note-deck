@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プロジェクト計画の型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:730px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:730px;}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--green-bg);}.mode.m2{background:var(--purple-bg);}.mode.m3{background:var(--red-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
+  .mode.m1 .en{color:var(--green);}.mode.m2 .en{color:var(--purple);}.mode.m3 .en{color:var(--red);}
+  .mode .jp{font-family:var(--disp);font-weight:900;font-size:21px;line-height:1.15;margin:7px 0 8px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
+  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
+  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .tok{font-family:var(--mono);font-weight:700;font-size:12px;padding:6px 10px;border:2px solid #fff;color:#fff;}
+  .tok.b{border-color:var(--blue);color:#9fb0ff;}.tok.g{border-color:var(--green);color:#6fe3b6;}.tok.r{border-color:var(--red);color:#ff9b92;}.tok.p{border-color:var(--purple);color:#c9a4ff;}.tok.y{border-color:var(--yellow);color:var(--yellow);}
+  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
+
+  section{padding:50px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
+
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+  .pill{font-family:var(--mono);font-weight:700;font-size:11px;padding:2px 8px;border:2px solid var(--ink);white-space:nowrap;display:inline-block;}
+  .pill.r{background:var(--green);color:#fff;border-color:var(--green);}
+  .pill.a{background:var(--red);color:#fff;border-color:var(--red);}
+  .pill.c{background:var(--yellow);}
+  .pill.i{background:#eee;color:var(--muted);}
+
+  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
+    font-family:var(--mono);font-size:12.5px;line-height:1.9;padding:32px 17px 15px;margin:12px 0 16px;overflow-x:auto;white-space:pre-wrap;}
+  .code .k{color:#7fd6ff;font-weight:700;}.code .v{color:#ffd84d;}.code .c{color:#7c8597;}.code .e{color:#9fe6b8;}
+  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s;}
+  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
+  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:12px 0 14px;}
+  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
+  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:4px;}
+  .gc .gd{font-size:12.5px;color:#333;line-height:1.6;}
+  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
+  .note.r{border-left-color:var(--red);background:var(--red-bg);}
+  .note b{font-weight:700;}.note code{font-family:var(--mono);font-weight:700;background:#fff;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;}
+  .chk{border:2px solid #444;padding:11px 13px;font-size:13px;line-height:1.5;}
+  .chk b{color:var(--yellow);}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+
+  a.xref{color:var(--blue);font-weight:700;text-decoration:underline;text-decoration-color:rgba(31,61,240,.4);text-underline-offset:2px;}
+  a.xref:hover{text-decoration-color:var(--blue);}
+  .final a.xref{color:#ffd84d;text-decoration-color:rgba(255,216,77,.5);}
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.code,.final,.note,.shead .num{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; PROJECT PLANNING / FRAMEWORK</span>
+    <span>計画の型 ― CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">計画</span>の型<span class="dot">.</span></h1>
+    <p class="sub">プロジェクト計画 ― 分解・見積り・段取り・リスク</p>
+    <p class="thesis"><b>計画は「当てる」ためでなく、ズレを早く見つけるためにある。</b>だから分解・見積り・責任・リスクを一巡させる。</p>
+    <p class="lead"><a class="xref" href="requirements_cheatsheet.html">要件定義</a>の次の工程。WBS・3点見積り・クリティカルパス・RACI・リスク管理を1枚に。完璧な計画より、更新し続けられる計画を。</p>
+  </header>
+
+  <!-- CORE -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">DECOMPOSE</div>
+      <div class="jp">分解（WBS）</div>
+      <div class="desc">成果物ベースで作業に割る。見えていない作業は見積れない。まず分解。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">ESTIMATE</div>
+      <div class="jp">見積り</div>
+      <div class="desc">点でなく幅で。3点見積りと過去実績で、不確実性を見える化する。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">DE-RISK</div>
+      <div class="jp">リスク管理</div>
+      <div class="desc">起きてから対応しない。確率×影響で評価し、先回りで備える。</div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow rv">
+    <div class="flabel">計画の流れ</div>
+    <div class="seq">
+      <span class="tok b">スコープ</span><span class="arr">→</span>
+      <span class="tok g">WBS(分解)</span><span class="arr">→</span>
+      <span class="tok p">見積り</span><span class="arr">→</span>
+      <span class="tok r">依存・順序</span><span class="arr">→</span>
+      <span class="tok y">スケジュール</span><span class="arr">→</span>
+      <span class="tok b">RACI</span><span class="arr">→</span>
+      <span class="tok r">リスク</span>
+    </div>
+  </div>
+
+  <!-- 01 全体像 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">01</span><h2>計画に含めるもの</h2><span class="tag">OVERVIEW</span></div>
+    <p class="lede">計画書の骨子はこの8つ。コピーして埋めれば計画のたたき台になる。</p>
+    <div class="code"><span class="c"># プロジェクト計画（骨子）</span>
+<span class="k">1.</span> 目的・成功基準   何が達成できたら成功か
+<span class="k">2.</span> スコープ         In / Out（要件定義から引き継ぐ）
+<span class="k">3.</span> WBS / 成果物     作業分解（ワークパッケージ）
+<span class="k">4.</span> 見積り           規模(S/M/L) / 期間（3点見積り）
+<span class="k">5.</span> スケジュール     マイルストーン / 依存 / クリティカルパス
+<span class="k">6.</span> 体制(RACI)       R / A(1人) / C / I
+<span class="k">7.</span> リスク           発生確率 × 影響 / 対応策 / トリガー
+<span class="k">8.</span> 前提・制約       予算 / 期限 / 体制 / 外部依存</div>
+  </section>
+
+  <!-- 02 WBS -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">02</span><h2>WBS（作業分解）</h2><span class="tag">DECOMPOSE</span></div>
+    <p class="lede">大きな塊は見積れない。<b>成果物ベース</b>で、扱える粒度まで割る。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">成果物で分ける</div><div class="gd">「動詞の作業」より「できあがる物」で分割すると抜けにくい。</div></div>
+      <div class="gc"><div class="gt">100%ルール</div><div class="gd">子の合計＝親の100%。足して全体になり、重複もない（＝MECE）。</div></div>
+      <div class="gc"><div class="gt">粒度の目安</div><div class="gd">末端のワークパッケージは<b>数日〜2週間</b>。大きすぎると進捗が見えない。</div></div>
+      <div class="gc"><div class="gt">抜け漏れ点検</div><div class="gd">設計・テスト・レビュー・リリース・ドキュメント・移行も作業。忘れがち。</div></div>
+    </div>
+  </section>
+
+  <!-- 03 見積り -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">03</span><h2>見積り（規模・期間）</h2><span class="tag">ESTIMATE</span></div>
+    <p class="lede">見積りは<b>点でなく幅</b>。当たらない前提で、ばらつきを見える化する。</p>
+    <div class="code"><span class="c"># 3点見積り（PERT）</span>
+期待値 = (楽観 O ＋ 4×最可能 M ＋ 悲観 P) / 6
+ばらつき σ = (P − O) / 6
+
+<span class="c"># 例: O=2, M=4, P=10 日</span>
+期待値 = (2 + 16 + 10) / 6 = <span class="e">4.7 日</span>
+σ = (10 − 2) / 6 = 1.3      → <span class="e">4.7 ± 1.3 日</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">相対見積り（S/M/L）</div><div class="gd">絶対時間より相対サイズが速くブレにくい。ストーリーポイント／プランニングポーカー。</div></div>
+      <div class="gc"><div class="gt">過去実績で補正</div><div class="gd">似た作業の実測（ベロシティ）を基準に。自分の勘より過去データ。</div></div>
+    </div>
+    <div class="note r"><b>計画錯誤に注意：</b>人は自分の作業を楽観的に見積もる（カーネマン）。幅で持つ・他者にレビューさせる・過去実績で殴る。</div>
+  </section>
+
+  <!-- 04 依存・CP -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">04</span><h2>依存・順序・クリティカルパス</h2><span class="tag">SEQUENCE</span></div>
+    <p class="lede">作業には順序がある。<b>全体の納期を決めるのは最長経路</b>＝クリティカルパス。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">依存を引く</div><div class="gd">先行→後続を明示。並行できる作業は並行に。前提待ちを早く出す。</div></div>
+      <div class="gc"><div class="gt">クリティカルパス（CPM）</div><div class="gd">遅れると<b>全体が遅れる</b>最長の経路。ここを重点監視。短縮はここから。</div></div>
+      <div class="gc"><div class="gt">フロート（余裕）</div><div class="gd">CP以外の作業が持つ遅延吸収幅。ここは多少遅れても全体に響かない。</div></div>
+      <div class="gc"><div class="gt">外部依存は早出し</div><div class="gd">ベンダー納品・他部署・APIなど、自分で握れない依存ほど前倒しで確認。</div></div>
+    </div>
+  </section>
+
+  <!-- 05 スケジュール -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">05</span><h2>スケジュール &amp; マイルストーン</h2><span class="tag">SCHEDULE</span></div>
+    <p class="lede">日付の羅列でなく<b>判断ポイント</b>を置く。バッファは散らさず集約する。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">マイルストーン</div><div class="gd">「進む/直す/止める」を判断する節目。成果物の完成や検収に置く。</div></div>
+      <div class="gc"><div class="gt">バッファは末尾に集約</div><div class="gd">各タスクに余裕を散らすと食い潰される（学生症候群・パーキンソンの法則）。末尾にまとめる＝クリティカルチェーン(CCPM)の考え方。</div></div>
+      <div class="gc"><div class="gt">ガントは結果</div><div class="gd">WBS＋依存＋見積りができれば線は引ける。線から作らない。</div></div>
+      <div class="gc"><div class="gt">計画は更新する</div><div class="gd">マイルストーンごとに実績で引き直す。固定した計画は嘘になる。</div></div>
+      <div class="gc"><div class="gt">ローリングウェーブ</div><div class="gd">直近は細かく、先は粗く計画する。不確実な将来を作り込みすぎない。長期・多サイトの移行向き。</div></div>
+    </div>
+  </section>
+
+  <!-- 06 RACI -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">06</span><h2>体制・役割（RACI）</h2><span class="tag">ROLES</span></div>
+    <p class="lede">「誰がやる/誰が決める」を作業ごとに固定する。<b>Accountable は必ず1人</b>。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>記号</th><th>意味</th><th>ルール</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill r">R</span> Responsible</td><td>実行する人</td><td>複数可</td></tr>
+          <tr><td><span class="pill a">A</span> Accountable</td><td>説明責任・最終承認</td><td><b>必ず1人</b></td></tr>
+          <tr><td><span class="pill c">C</span> Consulted</td><td>相談する（双方向）</td><td>必要な人だけ</td></tr>
+          <tr><td><span class="pill i">I</span> Informed</td><td>報告を受ける（一方向）</td><td>絞る</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>定番の事故：</b>A が複数＝決まらない、A が不在＝止まる。各作業に <b>A をちょうど1人</b>。ベンダー連携では責任分界点もここで握る。</div>
+  </section>
+
+  <!-- 07 リスク -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">07</span><h2>リスク管理</h2><span class="tag">DE-RISK</span></div>
+    <p class="lede">洗い出し → <b>発生確率 × 影響</b>で評価 → 高い順に対応策 → トリガーを決めて見直す。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>対応</th><th>中身</th><th>例</th></tr></thead>
+        <tbody>
+          <tr><td><b>回避</b></td><td>リスク源を断つ（やり方を変える）</td><td>不確実な新技術をやめる</td></tr>
+          <tr><td><b>軽減</b></td><td>確率/影響を下げる</td><td>PoC・段階リリース・冗長化</td></tr>
+          <tr><td><b>転嫁</b></td><td>第三者に移す</td><td>外注・契約・保険</td></tr>
+          <tr><td><b>受容</b></td><td>受け入れて備える</td><td>コンティンジェンシー（予備）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note r"><b>リスク登録簿：</b>リスク／確率／影響／対応／<b>トリガー（何が起きたら発動）</b>／担当 を一覧に。定例で見直す。「起きてから対応」は計画ではない。</div>
+  </section>
+
+  <!-- 08 アンチパターン -->
+  <section class="acc-ink rv">
+    <div class="shead"><span class="num">08</span><h2>アンチパターン</h2><span class="tag">PITFALLS</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">楽観見積り</div><div class="gd">計画錯誤。幅で持つ・過去実績・他者レビュー。</div></div>
+      <div class="gc"><div class="gt">バッファを散らす</div><div class="gd">各タスクの余裕は食い潰される。末尾に集約。</div></div>
+      <div class="gc"><div class="gt">A が複数 / 不在</div><div class="gd">決まらない・止まる。各作業に1人。</div></div>
+      <div class="gc"><div class="gt">依存を無視</div><div class="gd">並行できない作業を並行前提に。CPを引く。</div></div>
+      <div class="gc"><div class="gt">リスク未管理</div><div class="gd">「起きてから」。登録簿で先回り。</div></div>
+      <div class="gc"><div class="gt">計画を更新しない</div><div class="gd">計画は生もの。節目で実績で引き直す。</div></div>
+    </div>
+  </section>
+
+  <!-- 09 記入例 -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">09</span><h2>記入例（ワークスルー）</h2><span class="tag">EXAMPLE</span></div>
+    <p class="lede">1つのプロジェクトを通すと各要素の繋がりが見える。題材: <b>1サイトの Next.js 移行</b>（縮約）。</p>
+    <div class="code"><span class="c"># 例: 1サイトの Next.js 移行（縮約）</span>
+
+<span class="k">【成功基準】</span> 旧と同等の表示・計測を維持し、主要URLの順位を落とさない
+
+<span class="k">【WBS（抜粋）】</span>
+  1. 棚卸・URL対応表    2. 実装（テンプレ移植/フォーム）
+  3. リダイレクト設計(301/308)  4. 計測タグ移行
+  5. テスト・検収        6. 切替・公開
+
+<span class="k">【見積り（3点・日）】</span>
+  実装: O=4 M=6 P=12 → 期待値 <span class="e">6.7 ± 1.3 日</span>
+
+<span class="k">【クリティカルパス】</span>
+  URL対応表 → 実装 → リダイレクト → 検収 → 切替
+  （対応表が遅れると全部遅れる ＝ 最重点）
+
+<span class="k">【RACI（抜粋）】</span>
+  実装: R=担当 / A=自分 / C=ベンダー / I=関係部署
+  切替: R=インフラ / A=自分 / C=ベンダー / I=営業
+
+<span class="k">【上位リスク】</span>
+  ・対応表の漏れ        → 軽減: 二重チェック / クロール突合
+  ・切替後のループ      → 軽減: ステージングで全URL検証
+  ・計測タグ欠落        → 受容+検知: 公開直後にダッシュ確認</div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">計画 1枚チェック</div>
+    <div class="fs">これが言えたら計画は回る</div>
+    <div class="checks">
+      <div class="chk"><b>成功基準</b>が定義されているか</div>
+      <div class="chk"><b>WBS</b>に抜けはないか（100%）</div>
+      <div class="chk">見積りを<b>幅</b>で持っているか</div>
+      <div class="chk"><b>クリティカルパス</b>を把握しているか</div>
+      <div class="chk">各作業に <b>A が1人</b>か</div>
+      <div class="chk">上位リスクに<b>対応策</b>があるか</div>
+    </div>
+    <p class="conc">結論：<b>計画は当てるためでなく、ズレを早く見つけるため。</b>分解・見積り(幅)・責任(A=1人)・リスクを一巡し、マイルストーンで更新し続ける。</p>
+  </div>
+
+  <footer>プロジェクト計画の型 ― framework series — checked 2026-06-12 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(block){
+    var text = block.innerText;
+    var btn = document.createElement('button');
+    btn.className = 'copybtn'; btn.type = 'button'; btn.textContent = 'copy';
+    function done(){ btn.textContent='copied!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='copy'; btn.classList.remove('done'); }, 1300); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='手動で選択'; }
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }catch(e){ fallback(); }
+    });
+    block.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

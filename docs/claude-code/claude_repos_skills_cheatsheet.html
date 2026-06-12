@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude おすすめリポ / Skills 集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .sl{color:var(--purple);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .lead{font-size:clamp(14px,1.8vw,16px);font-weight:500;line-height:1.7;margin-top:14px;max-width:680px;}
+  .hero .lead b{background:linear-gradient(transparent 62%,var(--yellow) 62%);}
+
+  /* START-HERE PANELS */
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--blue-bg);}
+  .mode.m2{background:var(--yellow-bg);}
+  .mode.m3{background:var(--purple-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.18em;}
+  .mode.m1 .en{color:var(--blue);}
+  .mode.m2 .en{color:#7a6200;}
+  .mode.m3 .en{color:var(--purple);}
+  .mode .rn{font-family:var(--mono);font-weight:700;font-size:17px;line-height:1.2;margin:7px 0 9px;word-break:break-word;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  section{padding:50px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:20px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}
+  .acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}
+  .acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}
+  .acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .lede{font-size:14px;color:var(--muted);margin:-6px 0 18px;max-width:720px;}
+
+  /* REPO CARDS */
+  .repos{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin:12px 0 14px;}
+  .repo{border:2px solid var(--ink);background:var(--card);box-shadow:5px 5px 0 var(--ink);overflow:hidden;display:flex;flex-direction:column;}
+  .repo .rh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 13px;border-bottom:2px solid var(--ink);}
+  .repo .rname{font-family:var(--mono);font-weight:700;font-size:13.5px;word-break:break-all;line-height:1.3;}
+  .rname a,.mode .rn a{color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:2px;text-decoration-color:rgba(20,20,20,.3);}
+  .rname a:hover,.mode .rn a:hover{text-decoration-color:currentColor;}
+  .repo .star{font-family:var(--mono);font-weight:700;font-size:11px;padding:3px 8px;border:2px solid var(--ink);white-space:nowrap;flex-shrink:0;}
+  .acc-blue .star{background:var(--blue-bg);}
+  .acc-yellow .star{background:var(--yellow-bg);}
+  .acc-purple .star{background:var(--purple-bg);}
+  .acc-green .star{background:var(--green-bg);}
+  .acc-red .star{background:var(--red-bg);}
+  .repo .rb{padding:12px 13px;flex:1;font-size:12.5px;line-height:1.65;color:#2a2a2a;}
+  .repo .inst{font-family:var(--mono);font-size:11.5px;background:#16181d;color:#9fe6b8;padding:8px 11px;border-top:2px solid var(--ink);white-space:pre-wrap;word-break:break-all;}
+  .repo .inst .c{color:#7c8597;}
+
+  /* NOTE */
+  .note{border:2px solid var(--ink);border-left:8px solid var(--red);background:var(--red-bg);padding:14px 16px;margin:16px 0;font-size:13px;line-height:1.75;}
+  .note.warny{border-left-color:var(--yellow);background:var(--yellow-bg);}
+  .note b{font-weight:700;}
+  .note ul{margin:8px 0 0 18px;}
+  .note li{margin:3px 0;}
+
+  /* FINAL */
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .final .fcode{font-family:var(--mono);font-size:13px;line-height:2;white-space:pre-wrap;word-break:break-all;display:block;}
+  .final .fcode .c{color:#8a93a6;}
+  .final .fcode .n{color:#7fd6ff;font-weight:700;}
+  .final .fcode a{color:#7fd6ff;text-decoration:underline;text-decoration-color:rgba(127,214,255,.5);text-underline-offset:2px;}
+  .final .fcode a:hover{text-decoration-color:#7fd6ff;}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.repos{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.repo,.final,.note,.shead .num{box-shadow:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; CLAUDE / ECOSYSTEM</span>
+    <span>REPOS &amp; SKILLS — CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="sl">★</span> おすすめリポ / Skills<span class="dot">.</span></h1>
+    <p class="sub">Claude / Claude Code で効くリポ厳選</p>
+    <p class="lead">まず<b>公式</b>、次に<b>厳選リスト1つ</b>を入口にすると迷わない。<br>
+      ★の数はスナップショット（変動する）。導入前にライセンスと中身を必ず確認。<b>任意コードが走り得る</b>ので信頼できる元だけ。</p>
+  </header>
+
+  <!-- START HERE -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">START — OFFICIAL</div>
+      <div class="rn"><a href="https://github.com/anthropics/skills" target="_blank" rel="noopener">anthropics/skills</a></div>
+      <div class="desc">Anthropic 公式の Agent Skills 集。Claude.ai の文書作成機能もここ由来。まず眺めるならこれ。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">START — LIST</div>
+      <div class="rn"><a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">hesreallyhim/<br>awesome-claude-code</a></div>
+      <div class="desc">人手で選別された定番リスト。カテゴリごとに1つ選ぶ入口。動かないものは外される運用。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">START — FRAMEWORK</div>
+      <div class="rn"><a href="https://github.com/obra/superpowers" target="_blank" rel="noopener">obra/superpowers</a></div>
+      <div class="desc">スキル群＋開発手法のフレームワーク。公式マーケットプレイス入り。自動でスキルが効く。</div>
+    </div>
+  </div>
+
+  <!-- 01 公式 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">01</span><h2>公式（まずここ）</h2><span class="tag">OFFICIAL</span></div>
+    <p class="lede">迷ったら公式から。信頼性・更新・互換が一番安定している。</p>
+    <div class="repos">
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener">anthropics/claude-code</a></span><span class="star">★ ~132k</span></div>
+        <div class="rb">Claude Code 本体。ターミナルで動くエージェント型コーディングツール。Issue・ドキュメントの起点。</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/anthropics/skills" target="_blank" rel="noopener">anthropics/skills</a></span><span class="star">★ ~149k</span></div>
+        <div class="rb">公式 Agent Skills 集（17系統）。docx/pdf/xlsx/pptx・frontend-design など。Claude.ai の文書機能の実体でもある。</div>
+        <div class="inst"><span class="c"># Claude Code から導入</span>
+/plugin install document-skills@anthropic-agent-skills
+/plugin install example-skills@anthropic-agent-skills</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/anthropics/claude-agent-sdk-python" target="_blank" rel="noopener">anthropics/claude-agent-sdk-python</a></span><span class="star">★ ~7k</span></div>
+        <div class="rb">公式 Agent SDK（Python）。旧 claude-code-sdk-python からリネーム。自前のスクリプト・CI からエージェントを呼ぶ土台。</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://agentskills.io" target="_blank" rel="noopener">agentskills.io</a></span><span class="star">標準</span></div>
+        <div class="rb">SKILL.md 形式（Agent Skills）のオープン標準サイト。Claude 以外の各エージェントにも横展開できる。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 厳選リスト -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">02</span><h2>厳選リスト（awesome 系）</h2><span class="tag">CURATED</span></div>
+    <p class="lede">「何があるか」をまず把握する用。1つブックマークするなら hesreallyhim。</p>
+    <div class="repos">
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">hesreallyhim/awesome-claude-code</a></span><span class="star">定番</span></div>
+        <div class="rb">スキル・フック・スラッシュコマンド・オーケストレータ・プラグインを人手で選別。質重視。最初の1冊。</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/ComposioHQ/awesome-claude-skills" target="_blank" rel="noopener">ComposioHQ/awesome-claude-skills</a></span><span class="star">1000+ skills</span></div>
+        <div class="rb">スキル＆プラグインを大量収録。Claude.ai / Code / API、さらに他エージェントにも対応の横断カタログ。</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/jqueryscript/awesome-claude-code" target="_blank" rel="noopener">jqueryscript/awesome-claude-code</a></span><span class="star">ツール寄り</span></div>
+        <div class="rb">IDE統合・拡張・フレームワークなど開発ツール中心の一覧。★目安つきで取捨選択しやすい。</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/VoltAgent/awesome-claude-code-subagents" target="_blank" rel="noopener">VoltAgent/awesome-claude-code-subagents</a></span><span class="star">subagents</span></div>
+        <div class="rb">用途別サブエージェント定義の集積。役割分担を具体例で見られる。エージェント設計の参考に。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 スキル&コマンド集 -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">03</span><h2>スキル &amp; コマンド集</h2><span class="tag">PACKS</span></div>
+    <p class="lede">そのまま入れて使える実用パック。入れすぎは衝突のもとなので必要なものだけ。</p>
+    <div class="repos">
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/obra/superpowers" target="_blank" rel="noopener">obra/superpowers</a></span><span class="star">★ ~224k</span></div>
+        <div class="rb">スキル群＋開発手法。<span style="font-family:var(--mono)">/brainstorm</span>・<span style="font-family:var(--mono)">/write-plan</span>・<span style="font-family:var(--mono)">/execute-plan</span> などを提供。自動起動型。</div>
+        <div class="inst">/plugin install superpowers@claude-plugins-official</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/wshobson/commands" target="_blank" rel="noopener">wshobson/commands</a></span><span class="star">57 cmds</span></div>
+        <div class="rb">本番運用向けスラッシュコマンド集（ツール42・ワークフロー15）。<span style="font-family:var(--mono)">/tools:</span> や <span style="font-family:var(--mono)">/workflows:</span> で呼ぶ。</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/rohitg00/awesome-claude-code-toolkit" target="_blank" rel="noopener">rohitg00/awesome-claude-code-toolkit</a></span><span class="star">toolkit</span></div>
+        <div class="rb">エージェント・スキル・コマンド・フック・MCP設定・CLAUDE.md テンプレを一括。インストーラ付きの“全部入り”。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 MCP -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">04</span><h2>MCP サーバ</h2><span class="tag">CONNECT</span></div>
+    <p class="lede">外部ツール・データに繋ぐなら MCP。プロトコル非依存なので Cursor 等とも共有できる。</p>
+    <div class="repos">
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener">modelcontextprotocol/servers</a></span><span class="star">公式 reference</span></div>
+        <div class="rb">公式リファレンスの MCP サーバ集。ファイル・DB・各種APIなど。自前サーバを作る際の手本にも。</div>
+        <div class="inst"><span class="c"># 例：GitHub 連携を追加</span>
+claude mcp add github -- npx -y @modelcontextprotocol/server-github</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/punkpeye/awesome-mcp-servers" target="_blank" rel="noopener">punkpeye/awesome-mcp-servers</a></span><span class="star">curated</span></div>
+        <div class="rb">MCP サーバの厳選一覧。ファイルシステム・クラウド・開発ツールまで横断。awesome-claude-code とは別管理。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 運用・コスト・安全 -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">05</span><h2>運用・コスト・安全</h2><span class="tag">OPS</span></div>
+    <p class="lede">チーム導入で効く実務系。コスト可視化とセキュリティレビューはガバナンスに直結。</p>
+    <div class="repos">
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/ccusage/ccusage" target="_blank" rel="noopener">ccusage/ccusage</a></span><span class="star">cost</span></div>
+        <div class="rb"><span style="font-family:var(--mono)">~/.claude/projects/*.jsonl</span> を読み、トークン・コストを可視化。オフライン・APIコール無しで使えるものが多い。</div>
+      </div>
+      <div class="repo">
+        <div class="rh"><span class="rname"><a href="https://github.com/anthropics/claude-code-security-review" target="_blank" rel="noopener">anthropics/claude-code-security-review</a></span><span class="star">★ ~5.2k</span></div>
+        <div class="rb">変更差分を Claude でセキュリティ分析する GitHub Action。PR ゲートに組み込める。ブランチ保護運用と相性が良い。</div>
+      </div>
+    </div>
+    <div class="note">
+      <b>導入前チェック（ガバナンス）：</b>
+      <ul>
+        <li>スキル/プラグインは<b>任意コードが走り得る</b>。Anthropic も「信頼できる元のみ・導入前にレビュー」を推奨。</li>
+        <li>★や採用数は<b>スナップショット</b>。リンク先で現況・最終更新・ライセンスを必ず確認。</li>
+        <li>一度に大量導入しない。<b>カテゴリごとに1つ</b>から。衝突と環境汚染の元になる。</li>
+      </ul>
+    </div>
+    <div class="note warny">
+      <b>補足（要確認）：</b>2026年4月の方針変更で、一部サブスク（Pro/Max）から<b>サードパーティのエージェントフレームワーク利用が制限された</b>という報道がある。公式/コミュニティの線引きは変わり得るので、最新の規約を確認のこと。
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">超短縮版</div>
+    <div class="fs">迷ったらこの順番</div>
+    <code class="fcode"><span class="c"># 1. 公式を起点に</span>
+<span class="n"><a href="https://github.com/anthropics/skills" target="_blank" rel="noopener">anthropics/skills</a></span>  ＋  <span class="n"><a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener">anthropics/claude-code</a></span>
+/plugin install document-skills@anthropic-agent-skills
+
+<span class="c"># 2. 全体像は厳選リスト1つ</span>
+<span class="n"><a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" rel="noopener">hesreallyhim/awesome-claude-code</a></span>
+
+<span class="c"># 3. 効くパックを必要な分だけ</span>
+/plugin install superpowers@claude-plugins-official
+<span class="n"><a href="https://github.com/wshobson/commands" target="_blank" rel="noopener">wshobson/commands</a></span>（コマンド集）
+
+<span class="c"># 4. 繋ぐなら MCP</span>
+<span class="n"><a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener">modelcontextprotocol/servers</a></span>
+
+<span class="c"># 5. チーム運用</span>
+<span class="n"><a href="https://github.com/anthropics/claude-code-security-review" target="_blank" rel="noopener">claude-code-security-review</a></span>（PRゲート）＋ ccusage（コスト）</code>
+    <p class="conc">入口は<b>公式＋厳選リスト1つ</b>。あとは<b>カテゴリごとに1つずつ</b>、レビューしてから入れる。これが汚染しない増やし方。</p>
+  </div>
+
+  <footer>Claude ecosystem — repos &amp; skills / star counts are snapshots (2026-06-11), verify before installing · <a href="../index.html">↑ index</a></footer>
+
+</div>
+</body>
+</html>

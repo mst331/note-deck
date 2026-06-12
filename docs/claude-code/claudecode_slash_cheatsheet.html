@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code スラッシュコマンド チートシート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;
+    --paper:#ffffff;
+    --card:#ffffff;
+    --line:#141414;
+    --muted:#5b5b54;
+
+    --blue:#1f3df0;     /* session / context */
+    --blue-bg:#e6eaff;
+    --red:#fa3b2d;      /* config / mode */
+    --red-bg:#ffe7e3;
+    --yellow:#ffcb05;   /* info / diag */
+    --yellow-bg:#fff4cc;
+    --green:#0aa46a;    /* project / extend */
+    --green-bg:#dff6ec;
+    --purple:#7b3ff2;   /* custom / skills */
+    --purple-bg:#efe7ff;
+
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px 96px;}
+
+  /* META */
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+    padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  /* HERO */
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:.95;letter-spacing:-.03em;}
+  .hero h1 .sl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .lead{font-size:clamp(14px,1.8vw,16px);font-weight:500;line-height:1.7;margin-top:14px;max-width:660px;}
+  .hero .lead b{background:linear-gradient(transparent 62%,var(--yellow) 62%);}
+
+  /* MODE PANELS (daily drivers) */
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px 18px 16px;}
+  .mode.m1{background:var(--blue-bg);}
+  .mode.m2{background:var(--green-bg);}
+  .mode.m3{background:var(--red-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.2em;}
+  .mode.m1 .en{color:var(--blue);}
+  .mode.m2 .en{color:var(--green);}
+  .mode.m3 .en{color:var(--red);}
+  .mode .cmd{font-family:var(--mono);font-weight:700;font-size:24px;line-height:1;margin:6px 0 10px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.65;}
+
+  /* FLOW */
+  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
+  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
+  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .tok{font-family:var(--mono);font-weight:700;font-size:13.5px;padding:6px 11px;border:2px solid #fff;color:#fff;}
+  .tok.b{border-color:var(--blue);color:#9fb0ff;}
+  .tok.g{border-color:var(--green);color:#6fe3b6;}
+  .tok.y{border-color:var(--yellow);color:var(--yellow);}
+  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
+
+  /* SECTION */
+  section{padding:50px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:22px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}
+  .acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}
+  .acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}
+  .acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-8px 0 18px;max-width:700px;}
+
+  /* COMMAND GRID */
+  .cmds{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:12px 0 14px;}
+  .crow{display:flex;align-items:flex-start;gap:11px;border:2px solid var(--ink);background:var(--card);padding:9px 11px;box-shadow:3px 3px 0 var(--ink);transition:transform .12s,box-shadow .12s;}
+  .crow:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink);}
+  .slash{font-family:var(--mono);font-weight:700;font-size:13.5px;padding:4px 8px;border:2px solid var(--ink);background:var(--blue-bg);white-space:nowrap;flex-shrink:0;}
+  .acc-red .slash{background:var(--red-bg);}
+  .acc-yellow .slash{background:var(--yellow-bg);}
+  .acc-green .slash{background:var(--green-bg);}
+  .acc-purple .slash{background:var(--purple-bg);}
+  .crow .lab{font-size:12.5px;font-weight:500;line-height:1.45;padding-top:2px;}
+
+  /* CODE */
+  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
+    font-family:var(--mono);font-size:13px;line-height:1.85;padding:30px 17px 15px;margin:14px 0 16px;overflow-x:auto;white-space:pre;}
+  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;border-radius:0;transition:background .12s,color .12s;}
+  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
+  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
+  .code .c{color:#7c8597;}
+  .code .p{color:#ffd84d;}
+  .code .cmd{color:#7fd6ff;font-weight:700;}
+  .code .opt{color:#ff9b92;}
+  .code .str{color:#9fe6b8;}
+  .code .key{color:#c9a4ff;font-weight:700;}
+
+  /* TABLE */
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:13px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 13px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11.5px;letter-spacing:.04em;white-space:nowrap;}
+  td{padding:10px 13px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.65;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td kbd,.kbd{font-family:var(--mono);font-weight:700;background:var(--yellow-bg);padding:2px 7px;border:1px solid var(--ink);font-size:12px;white-space:nowrap;display:inline-block;}
+  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 6px;border:1px solid var(--ink);font-size:12px;white-space:nowrap;}
+
+  /* NOTE */
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:16px 0;font-size:13px;line-height:1.7;}
+  .note b{font-weight:700;}
+
+  /* FINAL */
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .final .fcode{font-family:var(--mono);font-size:13.5px;line-height:1.95;white-space:pre;overflow-x:auto;display:block;}
+  .final .fcode .p{color:#ffd84d;}
+  .final .fcode .cmd{color:#7fd6ff;font-weight:700;}
+  .final .fcode .opt{color:#ff9b92;}
+  .final .fcode .c{color:#8a93a6;}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  /* REVEAL */
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){
+    .modes{grid-template-columns:1fr;}
+    .cmds{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}.crow{transition:none;}}
+  @media print{
+    body{background:#fff;}
+    .mode,.flow,.code,.tbl,.crow,.shead .num,.final,.note{box-shadow:none;}
+    .copybtn{display:none;}
+    .rv{animation:none;opacity:1;transform:none;}
+    section{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; CLAUDE CODE / CLI</span>
+    <span>SLASH COMMANDS — CHEAT SHEET</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero rv">
+    <h1><span class="sl">/</span>Claude Code<span class="dot">.</span></h1>
+    <p class="sub">スラッシュコマンド チートシート</p>
+    <p class="lead">セッション中に <span class="icode">/</span> を打つとコマンド一覧が出る。<b>定番だけ押さえれば回る。</b><br>
+      ビルトインは60以上あって毎週増減するので、<b>正は常に <span class="icode">/</span> の一覧</b>。ここは“よく使う芯”をまとめたもの。</p>
+  </header>
+
+  <!-- DAILY DRIVERS -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">CONTEXT</div>
+      <div class="cmd">/compact</div>
+      <div class="desc">履歴を要約して文脈を圧縮。長い作業は限界前に自分から叩く。崩れ防止の最重要コマンド。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">FRESH START</div>
+      <div class="cmd">/clear</div>
+      <div class="desc">会話をクリアして新規タスクへ。引きずらず作り直すのが結局速い。トークンも節約。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">PROJECT</div>
+      <div class="cmd">/init</div>
+      <div class="desc">CLAUDE.md を生成し、プロジェクトを把握させる。新リポで最初に1回。</div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow rv">
+    <div class="flabel">1セッションの基本ループ</div>
+    <div class="seq">
+      <span class="tok b">claude</span><span class="arr">→</span>
+      <span class="tok g">/init</span><span class="arr">→</span>
+      <span class="tok y">作業</span><span class="arr">→</span>
+      <span class="tok b">/compact</span><span class="arr">→</span>
+      <span class="tok b">/cost</span><span class="arr">→</span>
+      <span class="tok g">/clear</span>
+    </div>
+  </div>
+
+  <!-- 01 セッション・コンテキスト -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">01</span><h2>セッション・コンテキスト</h2><span class="tag">SESSION</span></div>
+    <p class="lede">文脈管理まわり。長丁場は <b>/compact</b>、切り替えは <b>/clear</b> が軸。</p>
+    <div class="cmds">
+      <div class="crow"><span class="slash">/clear</span><span class="lab">会話をクリアして新規開始</span></div>
+      <div class="crow"><span class="slash">/compact</span><span class="lab">履歴を要約して圧縮（残す内容を引数指定も可）</span></div>
+      <div class="crow"><span class="slash">/context</span><span class="lab">コンテキスト使用量を表示</span></div>
+      <div class="crow"><span class="slash">/cost</span><span class="lab">トークン・コストを確認</span></div>
+      <div class="crow"><span class="slash">/usage</span><span class="lab">使用量・プラン上限を確認</span></div>
+      <div class="crow"><span class="slash">/rewind</span><span class="lab">会話／コード変更を巻き戻し（/checkpoint /undo も同じ）</span></div>
+      <div class="crow"><span class="slash">/resume</span><span class="lab">過去セッションを選んで再開</span></div>
+      <div class="crow"><span class="slash">/export</span><span class="lab">会話をエクスポート</span></div>
+      <div class="crow"><span class="slash">/btw</span><span class="lab">会話を汚さず横質問（履歴に残らない）</span></div>
+      <div class="crow"><span class="slash">/recap</span><span class="lab">ここまでの要約をオンデマンド生成</span></div>
+    </div>
+  </section>
+
+  <!-- 02 設定・モード -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">02</span><h2>設定・モード</h2><span class="tag">CONFIG</span></div>
+    <p class="lede">モデル・権限・入力モードの切り替え。Vim キーバインドは <b>/config → Editor mode</b> で有効化（旧 <span class="icode">/vim</span> は v2.1.92 で削除）。</p>
+    <div class="cmds">
+      <div class="crow"><span class="slash">/model</span><span class="lab">使用モデルを切り替え</span></div>
+      <div class="crow"><span class="slash">/config</span><span class="lab">設定を表示・変更（Editor mode で Vim 切替）</span></div>
+      <div class="crow"><span class="slash">/permissions</span><span class="lab">許可ツール・権限を設定</span></div>
+      <div class="crow"><span class="slash">/effort</span><span class="lab">思考の深さ（effort）を調整</span></div>
+      <div class="crow"><span class="slash">/terminal-setup</span><span class="lab">ターミナル統合ショートカットを導入</span></div>
+      <div class="crow"><span class="slash">/statusline</span><span class="lab">ステータスラインを設定</span></div>
+    </div>
+  </section>
+
+  <!-- 03 情報・診断 -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">03</span><h2>情報・診断・アカウント</h2><span class="tag">INFO</span></div>
+    <p class="lede">困ったらまず <b>/help</b> と <b>/doctor</b>。</p>
+    <div class="cmds">
+      <div class="crow"><span class="slash">/help</span><span class="lab">全コマンドの一覧と説明</span></div>
+      <div class="crow"><span class="slash">/status</span><span class="lab">現在の状態・接続を表示</span></div>
+      <div class="crow"><span class="slash">/doctor</span><span class="lab">インストール・環境を診断</span></div>
+      <div class="crow"><span class="slash">/release-notes</span><span class="lab">更新内容を確認</span></div>
+      <div class="crow"><span class="slash">/bug</span><span class="lab">バグを報告</span></div>
+      <div class="crow"><span class="slash">/security-review</span><span class="lab">保留中の変更をセキュリティレビュー</span></div>
+      <div class="crow"><span class="slash">/login</span><span class="lab">アカウントにログイン</span></div>
+      <div class="crow"><span class="slash">/logout</span><span class="lab">ログアウト</span></div>
+    </div>
+  </section>
+
+  <!-- 04 プロジェクト・拡張 -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">04</span><h2>プロジェクト・拡張</h2><span class="tag">EXTEND</span></div>
+    <p class="lede">CLAUDE.md・サブエージェント・MCP・プラグインまわり。ガバナンス設計と相性が良い。</p>
+    <div class="cmds">
+      <div class="crow"><span class="slash">/init</span><span class="lab">CLAUDE.md を生成（プロジェクト把握）</span></div>
+      <div class="crow"><span class="slash">/memory</span><span class="lab">CLAUDE.md を編集（追記は「覚えて」と頼む＝auto memory）</span></div>
+      <div class="crow"><span class="slash">/add-dir</span><span class="lab">作業対象ディレクトリを追加</span></div>
+      <div class="crow"><span class="slash">/agents</span><span class="lab">サブエージェントを管理</span></div>
+      <div class="crow"><span class="slash">/mcp</span><span class="lab">MCP サーバを接続・管理</span></div>
+      <div class="crow"><span class="slash">/plugin</span><span class="lab">プラグイン／マーケットプレイス</span></div>
+      <div class="crow"><span class="slash">/hooks</span><span class="lab">フック（自動処理）を設定</span></div>
+    </div>
+  </section>
+
+  <!-- 05 キーボードショートカット -->
+  <section class="acc-ink rv">
+    <div class="shead"><span class="num">05</span><h2>キーボード・入力ショートカット</h2><span class="tag">KEYS</span></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>キー</th><th>動作</th></tr></thead>
+        <tbody>
+          <tr><td><span class="kbd">Shift + Tab</span></td><td>モード切替（通常 → 自動承認 → Plan）</td></tr>
+          <tr><td><span class="kbd">Esc</span></td><td>生成を中断（止める）</td></tr>
+          <tr><td><span class="kbd">Esc</span> <span class="kbd">Esc</span></td><td>入力ありなら下書きをクリア／空なら巻き戻しメニュー</td></tr>
+          <tr><td><span class="kbd">Ctrl + C</span></td><td>入力キャンセル／終了</td></tr>
+          <tr><td><span class="kbd">Ctrl + D</span></td><td>セッション終了</td></tr>
+          <tr><td><span class="kbd">Ctrl + L</span></td><td>画面を再描画（履歴は保持）</td></tr>
+          <tr><td><span class="kbd">Ctrl + O</span></td><td>トランスクリプトビューア（ツール実行の詳細）</td></tr>
+          <tr><td><span class="kbd">Ctrl + R</span></td><td>入力履歴を逆検索</td></tr>
+          <tr><td><span class="kbd">Ctrl + B</span></td><td>実行中の Bash／エージェントをバックグラウンド化</td></tr>
+          <tr><td><span class="kbd">Ctrl + V</span></td><td>クリップボードの画像を貼り付け（Windows は Alt+V も）</td></tr>
+          <tr><td><span class="kbd">↑ / ↓</span></td><td>入力履歴をたどる</td></tr>
+          <tr><td><span class="kbd">!</span></td><td>Bash モード（コマンドを直接実行）</td></tr>
+          <tr><td><span class="kbd">@</span></td><td>ファイルを参照（パス補完）</td></tr>
+          <tr><td><span class="kbd">/</span></td><td>コマンドメニューを開く</td></tr>
+          <tr><td><span class="kbd">\ + Enter</span></td><td>改行（Shift+Enter／Ctrl+J も可。対応外ターミナルは /terminal-setup）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 06 CLIフラグ -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">06</span><h2>CLI フラグ（起動の外側）</h2><span class="tag">CLI</span></div>
+    <p class="lede">ターミナルから <span class="icode">claude</span> を叩くときのオプション。</p>
+    <div class="code"><span class="p">$</span> <span class="cmd">claude</span>                       <span class="c"># 対話セッション開始</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="str">"バグを直して"</span>          <span class="c"># プロンプト付きで開始</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">-p</span> <span class="str">"テスト実行"</span>          <span class="c"># 非対話（headless）で実行</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">-c</span>                    <span class="c"># 直近セッションを継続</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">-r</span>                    <span class="c"># セッションを選んで再開</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">--model</span> <span class="str">opus</span>          <span class="c"># モデル指定</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">--add-dir</span> <span class="str">../shared</span>    <span class="c"># 追加ディレクトリを許可</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">-p</span> <span class="str">"..."</span> <span class="opt">--output-format</span> <span class="str">json</span>  <span class="c"># JSON出力</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">--permission-mode</span> <span class="str">plan</span>  <span class="c"># Plan モードで起動</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">--effort</span> <span class="str">high</span>          <span class="c"># 思考の深さを指定</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="cmd">mcp</span> <span class="cmd">list</span>               <span class="c"># MCPサーバ一覧</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="cmd">update</span>                <span class="c"># 更新</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="cmd">doctor</span>                <span class="c"># 環境診断</span></div>
+    <div class="note"><b>注意：</b><span class="icode">--dangerously-skip-permissions</span> は確認を全部スキップする“yolo”モード。隔離環境以外では使わない。</div>
+  </section>
+
+  <!-- 07 自作コマンド & Skills -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">07</span><h2>自作コマンド &amp; Skills</h2><span class="tag">CUSTOM</span></div>
+    <p class="lede">よく使うプロンプトを <span class="icode">/名前</span> で呼べる。チーム共有はこれが品質の効きどころ。</p>
+    <div class="note"><b>いまの推奨：</b>旧 <span class="icode">.claude/commands/</span> は現役だが、<b>Skills（<span class="icode">.claude/skills/&lt;name&gt;/SKILL.md</span>）が推奨</b>。どちらも <span class="icode">/名前</span> で呼べて、Skills は Claude が自動で呼ぶこともできる。</div>
+    <div class="code"><span class="c"># .claude/commands/deploy.md  → /deploy で呼べる</span>
+<span class="key">---</span>
+<span class="key">description:</span> <span class="str">ステージングへデプロイ</span>
+<span class="key">allowed-tools:</span> <span class="str">Bash(git:*), Bash(npm:*)</span>
+<span class="key">argument-hint:</span> <span class="str">[branch]</span>
+<span class="key">---</span>
+現在のブランチをステージングにデプロイして。対象: <span class="opt">$ARGUMENTS</span></div>
+    <div class="cmds">
+      <div class="crow"><span class="slash">置き場所</span><span class="lab">プロジェクト直下 = 共有 ／ ~/.claude = 全プロジェクト</span></div>
+      <div class="crow"><span class="slash">$ARGUMENTS</span><span class="lab">本文に引数を差し込むプレースホルダ</span></div>
+      <div class="crow"><span class="slash">/mcp__server__prompt</span><span class="lab">MCPサーバ由来のコマンド</span></div>
+      <div class="crow"><span class="slash">git commit</span><span class="lab">.claude/ をコミットすればチームで共有</span></div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">超短縮版</div>
+    <div class="fs">これだけ覚えれば回る</div>
+    <code class="fcode"><span class="c"># 日常の芯</span>
+<span class="cmd">/init</span>      プロジェクト把握（最初に1回）
+<span class="cmd">/compact</span>   文脈が重くなったら圧縮（こまめに）
+<span class="cmd">/clear</span>     タスクが変わったらリセット
+<span class="cmd">/cost</span>      トークン確認
+<span class="cmd">/help</span>      迷ったら一覧
+
+<span class="c"># 入力</span>
+Shift+Tab  モード切替（通常 / 自動承認 / Plan）
+!          Bashモード        @  ファイル参照
+/          コマンド一覧      Ctrl+R  履歴検索
+メモリ追記は「覚えて」と頼む（auto memory）
+
+<span class="c"># 起動</span>
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">-c</span>     直近を継続
+<span class="p">$</span> <span class="cmd">claude</span> <span class="opt">-p</span> <span class="str">"..."</span>  headless実行</code>
+    <p class="conc">コマンドは毎週増減する。<b>正は常に <span style="color:#fff;">/</span> を打って出る一覧</b>。これは“芯”の早見表。</p>
+  </div>
+
+  <footer>Claude Code — slash command cheat sheet / verify with / in-session — checked 2026-06-11 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(block){
+    var text = block.innerText;
+    var btn = document.createElement('button');
+    btn.className = 'copybtn';
+    btn.type = 'button';
+    btn.textContent = 'copy';
+    function done(){ btn.textContent='copied!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='copy'; btn.classList.remove('done'); }, 1300); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='手動で選択'; }
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }catch(e){ fallback(); }
+    });
+    block.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

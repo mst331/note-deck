@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code 設定早見表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.2em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:720px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:720px;}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--blue-bg);}
+  .mode.m2{background:var(--red-bg);}
+  .mode.m3{background:var(--purple-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
+  .mode.m1 .en{color:var(--blue);}.mode.m2 .en{color:var(--red);}.mode.m3 .en{color:var(--purple);}
+  .mode .fn{font-family:var(--mono);font-weight:700;font-size:15px;line-height:1.25;margin:7px 0 8px;word-break:break-all;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  section{padding:50px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:20px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.13em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-6px 0 18px;max-width:730px;}
+
+  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
+    font-family:var(--mono);font-size:12.5px;line-height:1.8;padding:30px 17px 15px;margin:14px 0 16px;overflow-x:auto;white-space:pre;}
+  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;border-radius:0;transition:background .12s,color .12s;}
+  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
+  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
+  .code .c{color:#7c8597;} .code .k{color:#7fd6ff;} .code .s{color:#9fe6b8;} .code .n{color:#ffd84d;}
+  .code .p{color:#ffd84d;} .code .cm{color:#7fd6ff;font-weight:700;} .code .o{color:#ff9b92;} .code .dir{color:#c9a4ff;font-weight:700;}
+
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;white-space:nowrap;}
+  .pill{font-family:var(--mono);font-weight:700;font-size:11px;padding:2px 7px;border:2px solid var(--ink);white-space:nowrap;display:inline-block;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:12px 0 14px;}
+  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
+  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:5px;}
+  .gc .gd{font-size:12.5px;color:#333;line-height:1.65;}
+  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .note{border:2px solid var(--ink);border-left:8px solid var(--red);background:var(--red-bg);padding:13px 16px;margin:16px 0;font-size:13px;line-height:1.72;}
+  .note.y{border-left-color:var(--yellow);background:var(--yellow-bg);}
+  .note.g{border-left-color:var(--green);background:var(--green-bg);}
+  .note b{font-weight:700;} .note code{font-family:var(--mono);font-weight:700;background:#fff;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .final .fcode{font-family:var(--mono);font-size:12.5px;line-height:1.9;white-space:pre;overflow-x:auto;display:block;}
+  .final .fcode .c{color:#8a93a6;}.final .fcode .k{color:#7fd6ff;}.final .fcode .s{color:#9fe6b8;}.final .fcode .dir{color:#c9a4ff;font-weight:700;}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.code,.tbl,.gc,.final,.note,.shead .num{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; CLAUDE CODE / CONFIG</span>
+    <span>SETTINGS — CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">設定</span>早見表<span class="dot">.</span></h1>
+    <p class="sub">Claude Code — settings / permissions / hooks / memory / MCP</p>
+    <p class="thesis"><b>設定は「チームで効かせる」ためにある。</b>共有はコミット、個人は local、強制はフック。</p>
+    <p class="lead">どこに何を書くか・優先順位・許可制御・ゲート化までを1枚に。現行スキーマは変わり得るので <span class="icode">/config</span>・<span class="icode">/status</span> で確認を。</p>
+  </header>
+
+  <!-- KEY FILES -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">SHARED</div>
+      <div class="fn">.claude/settings.json</div>
+      <div class="desc">チーム共有の設定。コミットして全員に効かせる。permissions・hooks・env の本体。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">PERSONAL</div>
+      <div class="fn">.claude/settings.local.json</div>
+      <div class="desc">自分用の上書き。<b>gitignore 対象</b>。一時的な許可や個人の好みはここへ。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">CONTEXT</div>
+      <div class="fn">CLAUDE.md</div>
+      <div class="desc">毎回読まれるプロジェクト知識。規約・コマンド・“やってはいけない罠”を簡潔に。</div>
+    </div>
+  </div>
+
+  <!-- 01 全体像 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">01</span><h2>ファイルの全体像</h2><span class="tag">LAYOUT</span></div>
+    <p class="lede">「ユーザー単位（全プロジェクト）」と「プロジェクト単位（このリポ）」の2層。</p>
+    <div class="code"><span class="c"># ユーザー単位（全プロジェクトに効く）</span>
+<span class="dir">~/.claude/</span>
+├── settings.json        <span class="c"># 個人の既定（モデル・hooks・allow等）</span>
+├── CLAUDE.md            <span class="c"># 個人のグローバル指示</span>
+├── commands/  agents/  skills/   <span class="c"># 自分用の拡張</span>
+<span class="dir">~/.claude.json</span>            <span class="c"># ★別物：テーマ/セッション/MCP(user,local)。settings.jsonと混ぜない</span>
+
+<span class="c"># プロジェクト単位（このリポだけ）</span>
+<span class="dir">&lt;repo&gt;/</span>
+├── CLAUDE.md                  <span class="c"># 共有のプロジェクト知識（コミット）</span>
+├── .mcp.json                  <span class="c"># 共有MCPサーバ（コミット）</span>
+└── <span class="dir">.claude/</span>
+    ├── settings.json          <span class="c"># 共有設定（コミット）</span>
+    ├── settings.local.json    <span class="c"># 個人上書き（gitignore）</span>
+    ├── commands/  agents/  skills/
+    └── hooks/                 <span class="c"># フック用スクリプト</span></div>
+    <div class="note y"><b>定番の罠：</b><code>~/.claude.json</code> は settings.json とは別ファイル。ここに settings.json のキーを入れるとスキーマエラーで<b>黙って無視</b>される。</div>
+  </section>
+
+  <!-- 02 優先順位 -->
+  <section class="acc-ink rv">
+    <div class="shead"><span class="num">02</span><h2>設定の優先順位</h2><span class="tag">PRECEDENCE</span></div>
+    <p class="lede">上が強い。上のスコープが下を上書きする。どれが効いてるかは <span class="icode">/status</span> の Setting sources で確認。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>#</th><th>スコープ</th><th>場所</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><b>Managed（組織）</b></td><td>OS別の管理パス（managed-settings.json）</td><td>会社方針。誰も上書き不可</td></tr>
+          <tr><td>2</td><td>コマンド引数</td><td><code>claude --...</code></td><td>その起動だけの指定</td></tr>
+          <tr><td>3</td><td>Project local</td><td><code>.claude/settings.local.json</code></td><td>このリポの個人上書き（非コミット）</td></tr>
+          <tr><td>4</td><td>Project shared</td><td><code>.claude/settings.json</code></td><td>チーム共有（コミット）</td></tr>
+          <tr><td>5</td><td>User</td><td><code>~/.claude/settings.json</code></td><td>全プロジェクトの個人既定</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note g"><b>マージ規則：</b>配列は<b>連結</b>、オブジェクトは<b>ディープマージ</b>、スカラーは上位が<b>上書き</b>。例外は <code>fallbackModel</code>（最上位が連鎖全体を供給）。例：user で許可・project で拒否 → <b>project の拒否が勝つ</b>。</div>
+  </section>
+
+  <!-- 03 permissions -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">03</span><h2>permissions（最重要）</h2><span class="tag">PERMISSIONS</span></div>
+    <p class="lede">日常の体験と安全を一番左右する。<b>deny → ask → allow の順で評価、最初に当たったルールが勝つ</b>。deny は bypass でも勝つ。</p>
+    <div class="code"><span class="k">{</span>
+  <span class="k">"permissions"</span>: <span class="k">{</span>
+    <span class="k">"allow"</span>: [<span class="s">"Bash(npm:*)"</span>, <span class="s">"Bash(git:*)"</span>, <span class="s">"Edit(src/**)"</span>],
+    <span class="k">"ask"</span>:   [<span class="s">"Bash(git push:*)"</span>],
+    <span class="k">"deny"</span>:  [<span class="s">"Bash(rm:*)"</span>, <span class="s">"Read(./.env)"</span>, <span class="s">"Read(./.env.*)"</span>,
+              <span class="s">"Read(./secrets/**)"</span>, <span class="s">"WebFetch"</span>],
+    <span class="k">"defaultMode"</span>: <span class="s">"default"</span>,
+    <span class="k">"disableBypassPermissionsMode"</span>: <span class="s">"disable"</span>   <span class="c"># チームでは推奨</span>
+  <span class="k">}</span>
+<span class="k">}</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">ルール書式</div><div class="gd"><code>Tool(指定)</code>。完全一致／前方<code>prefix:*</code>／パターン<code>*</code>。例：<code>Bash(npm run test:*)</code>、<code>Read(./.env)</code>。<b>MCPツールは <code>mcp__server__tool</code></b>（二重アンダースコア・括弧なし）。</div></div>
+      <div class="gc"><div class="gt">秘密情報は deny</div><div class="gd"><code>.env</code>・<code>secrets/**</code>・認証情報を <code>deny: Read(...)</code> で遮断。認証情報コミット防止の第一歩。</div></div>
+      <div class="gc"><div class="gt">Read/Edit のパス記法</div><div class="gd"><code>//path</code>=絶対、<code>~/path</code>=ホーム、<code>/path</code>=設定ファイル基準の相対、<code>path</code>・<code>./path</code>=カレント基準。</div></div>
+      <div class="gc"><div class="gt">複合コマンドは自動分割</div><div class="gd"><code>&amp;&amp;</code>・<code>||</code>・<code>;</code>・パイプで繋いだ Bash は<b>個別コマンドに分解して評価</b>される。繋げば通る抜け道にはならない。</div></div>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>defaultMode / モード</th><th>挙動</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill">default</span></td><td>ルール外は都度確認（標準）</td></tr>
+          <tr><td><span class="pill">acceptEdits</span></td><td>ファイル編集は自動承認、シェル等は確認。プロトタイピング向き</td></tr>
+          <tr><td><span class="pill">plan</span></td><td>変更せず計画のみ（Shift+Tab で入る Plan）</td></tr>
+          <tr><td><span class="pill">dontAsk</span></td><td>allow 済み以外は<b>確認せず拒否</b>。固定ツール面の headless 向き</td></tr>
+          <tr><td><span class="pill">bypassPermissions</span></td><td>全スキップ＝yolo。隔離環境のみ。<code>--dangerously-skip-permissions</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>チームの肝：</b>誰か1人が bypass にすると全ルールが無力化する。Managed か共有設定で <code>"disableBypassPermissionsMode": "disable"</code> を入れておく。</div>
+  </section>
+
+  <!-- 04 settings keys -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">04</span><h2>settings.json 主なキー</h2><span class="tag">KEYS</span></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>キー</th><th>役割</th></tr></thead>
+        <tbody>
+          <tr><td><code>permissions</code></td><td>allow / deny / ask / defaultMode / additionalDirectories</td></tr>
+          <tr><td><code>model</code> / <code>fallbackModel</code></td><td>使用モデル（既定はアカウント種別による。<code>/status</code> で確認）／フォールバック連鎖</td></tr>
+          <tr><td><code>env</code></td><td>セッションに渡す環境変数</td></tr>
+          <tr><td><code>hooks</code></td><td>ライフサイクルフック定義（→ 06）</td></tr>
+          <tr><td><code>statusLine</code> / <code>outputStyle</code></td><td>ステータス行・出力スタイル</td></tr>
+          <tr><td><code>includeCoAuthoredBy</code></td><td>コミットに Co-authored-by を付けるか</td></tr>
+          <tr><td><code>cleanupPeriodDays</code></td><td>セッション履歴の保持日数</td></tr>
+          <tr><td><code>sandbox</code></td><td>bash の隔離・<code>network.allowedDomains</code> 制御</td></tr>
+          <tr><td><code>enableAllProjectMcpServers</code></td><td>.mcp.json のサーバを一括有効化（→ 07）</td></tr>
+          <tr><td><code>$schema</code></td><td>補完・検証用のスキーマ参照</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note y"><b>Managed専用の統制キー：</b><code>allowManagedHooksOnly</code>・<code>allowManagedPermissionRulesOnly</code>・<code>forceLoginMethod</code>・<code>strictKnownMarketplaces</code>（承認プラグイン元の固定）など。組織配布で効く。</div>
+  </section>
+
+  <!-- 05 CLAUDE.md -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">05</span><h2>CLAUDE.md（メモリ）</h2><span class="tag">MEMORY</span></div>
+    <p class="lede">起動時に自動で読まれる常駐文脈。<b>簡潔さが命</b>。肥大は性能劣化に直結する。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">読まれる階層</div><div class="gd">組織 → <code>~/.claude/CLAUDE.md</code>（個人グローバル）→ リポ直下 <code>CLAUDE.md</code>（共有）→ 作業中のサブディレクトリの <code>CLAUDE.md</code>。下位が状況に応じて足される。</div></div>
+      <div class="gc"><div class="gt">作る・足す・直す</div><div class="gd"><code>/init</code> で生成、「覚えて」と頼んでその場追記（auto memory）、<code>/memory</code> で編集。</div></div>
+      <div class="gc"><div class="gt">@インポート</div><div class="gd"><code>@README.md</code> や <code>@~/.claude/personal.md</code> で他ファイルを取り込み（最大4階層）。肥大化を分割で防ぐ。</div></div>
+      <div class="gc"><div class="gt">中身の指針</div><div class="gd">スタック・主要コマンド・規約・禁止事項を要点だけ。長い説明書にしない。効かない記述は棚卸で削除。</div></div>
+      <div class="gc"><div class="gt">.claude/rules/ で分割</div><div class="gd">ルールを複数ファイルに分割管理。frontmatter の <code>paths</code> でファイル種別ごとに適用範囲を絞れる。</div></div>
+    </div>
+  </section>
+
+  <!-- 06 hooks -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">06</span><h2>hooks（ゲート化）</h2><span class="tag">HOOKS</span></div>
+    <p class="lede">フック無しだと CLAUDE.md の規約は“お願い”。フックで<b>強制ゲート</b>になる。AIゲート運用の実装層。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>主なイベント</th><th>発火タイミング・できること</th></tr></thead>
+        <tbody>
+          <tr><td><code>PreToolUse</code></td><td>ツール実行前。<b>allow / deny / ask / 入力改変</b>。最強の防御点（本番ファイル保護・危険コマンド遮断）</td></tr>
+          <tr><td><code>PostToolUse</code></td><td>実行後。整形・チェック・出力の書き換え（秘密のマスク等）</td></tr>
+          <tr><td><code>UserPromptSubmit</code></td><td>送信時に文脈を注入</td></tr>
+          <tr><td><code>SessionStart / End</code></td><td>セッション開始・終了（直近コミットの注入など）</td></tr>
+          <tr><td><code>Stop / SubagentStop</code></td><td>応答終了時。最終チェック・継続強制</td></tr>
+          <tr><td><code>PreCompact</code></td><td>圧縮前の処理</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="code"><span class="c">// 例：書き込み後に Prettier を自動実行（承認連打を撲滅）</span>
+<span class="k">{</span> <span class="k">"hooks"</span>: <span class="k">{</span> <span class="k">"PostToolUse"</span>: [<span class="k">{</span>
+  <span class="k">"matcher"</span>: <span class="s">"Write|Edit"</span>,
+  <span class="k">"hooks"</span>: [<span class="k">{</span> <span class="k">"type"</span>: <span class="s">"command"</span>,
+    <span class="k">"command"</span>: <span class="s">"npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\""</span> <span class="k">}</span>]
+<span class="k">}</span>] <span class="k">}</span> <span class="k">}</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">ハンドラ種別（5種）</div><div class="gd"><b>command</b>（シェル）／<b>http</b>（エンドポイント）／<b>mcp_tool</b>（MCPツール）／<b>prompt</b>（単発LLM判定）／<b>agent</b>（サブエージェント検証）。</div></div>
+      <div class="gc"><div class="gt">matcher / 終了コード</div><div class="gd">ツール名の正規表現（<code>Edit|Write</code>、<code>mcp__.*</code>）。<b>PreToolUse で exit 2 = 遮断</b>。matcher 無しは毎回発火。既定タイムアウト10分（イベント別の上書きあり）。</div></div>
+    </div>
+    <div class="note"><b>governance：</b>PreToolUse で「本番ファイル編集」「<code>git push</code>」を要レビューに、PostToolUse で品質チェック、Stop で最終検証。これで規約が文書から<b>enforced gate</b>になる。CI/CD とも連携可。</div>
+  </section>
+
+  <!-- 07 MCP -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">07</span><h2>MCP 設定</h2><span class="tag">MCP</span></div>
+    <p class="lede">外部ツール接続。<b>スコープ＝どこまで共有するか</b>を意識して追加する。</p>
+    <div class="code"><span class="p">$</span> <span class="cm">claude</span> <span class="cm">mcp</span> add github <span class="o">--scope</span> project -- npx -y @modelcontextprotocol/server-github
+<span class="p">$</span> <span class="cm">claude</span> <span class="cm">mcp</span> list          <span class="c"># 一覧</span>
+<span class="p">$</span> <span class="cm">claude</span> <span class="cm">mcp</span> get github    <span class="c"># 詳細</span>
+<span class="c"># セッション中は /mcp で接続・認証・状態を確認</span></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>スコープ</th><th>保存先</th><th>共有範囲</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill">local</span>（既定）</td><td><code>~/.claude.json</code></td><td>自分・このプロジェクトだけ</td></tr>
+          <tr><td><span class="pill">project</span></td><td><code>.mcp.json</code>（コミット）</td><td>チーム全員で共有</td></tr>
+          <tr><td><span class="pill">user</span></td><td><code>~/.claude.json</code></td><td>自分の全プロジェクト</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note g"><b>共有のコツ：</b>チームで使うサーバは <code>--scope project</code> で <code>.mcp.json</code> に入れてコミット。各自は <code>enableAllProjectMcpServers</code> や <code>/mcp</code> で有効化。鍵は env や各自の認証で渡し、<b>.mcp.json に秘密を直書きしない</b>。</div>
+  </section>
+
+  <!-- 08 使い分け -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">08</span><h2>どの仕組みを使う？</h2><span class="tag">WHICH</span></div>
+    <p class="lede">機能が多いので、まず「やりたいこと」から引く。同じことを CLAUDE.md に書くだけでは“守られない”点が肝。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>こうしたい</th><th>使う仕組み</th><th>性質</th></tr></thead>
+        <tbody>
+          <tr><td>毎回同じ前提・規約を効かせる</td><td><code>CLAUDE.md</code></td><td>知識（助言）</td></tr>
+          <tr><td>何を許可・拒否するか決める</td><td><code>settings.json</code> / permissions</td><td>境界</td></tr>
+          <tr><td>規約を機械的に守らせる・自動化</td><td><code>hooks</code></td><td>強制</td></tr>
+          <tr><td>繰り返す手順・専門知識を教える（自動で効く）</td><td><code>skills</code></td><td>手順（自動発火）</td></tr>
+          <tr><td>よく使うプロンプトを手動で即呼ぶ</td><td>slash command</td><td>手順（手動）</td></tr>
+          <tr><td>別文脈で並行・レビュー役を立てる</td><td>subagents（<code>/agents</code>）</td><td>役割</td></tr>
+          <tr><td>外部ツール・データに繋ぐ</td><td>MCP</td><td>接続</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note g"><b>迷ったら：</b>「助言なら CLAUDE.md、<b>強制なら hook</b>、手順なら skill」。CLAUDE.md に“〜禁止”と書いても破られるなら、hook で固める。</div>
+  </section>
+
+  <!-- 09 トラブルシュート -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">09</span><h2>トラブルシュート</h2><span class="tag">FIX</span></div>
+    <p class="lede">詰まったら、まず <span class="icode">/status</span> と <span class="icode">/config</span>。「いま効いてる層」を見れば大半は切り分く。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>症状</th><th>原因・対処</th></tr></thead>
+        <tbody>
+          <tr><td>設定が効かない／反映されない</td><td>優先順位。<code>/status</code> の Setting sources で効いてる層を確認。上位スコープが上書きしていないか。再起動も試す</td></tr>
+          <tr><td>許可したのに Permission denied</td><td><b>deny が先に勝つ</b>。広い deny（例 <code>Bash(npm:*)</code>）が個別 allow を潰していないか</td></tr>
+          <tr><td>Model not available／起動しない</td><td><code>model</code> がアカウントの tier に無い。override を外すか、使えるモデルに変える</td></tr>
+          <tr><td>書いたのに丸ごと無視される</td><td><code>~/.claude.json</code> に書いていないか（別物・スキーマエラーで黙殺）。<code>settings.json</code> へ移す</td></tr>
+          <tr><td>フックが発火しない</td><td>matcher の正規表現（MCPは <code>mcp__server__.*</code> 必須）／exit code（2＝遮断）／既定10分タイムアウト／スクリプトの実行権限</td></tr>
+          <tr><td>壊した！</td><td>設定はタイムスタンプ付きで<b>自動バックアップ</b>される（保持世代数は版により異なるため要確認）。直前の動く版に戻せる</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">チーム導入・最小セット</div>
+    <div class="fs">これをコミットすれば全員同じ土台</div>
+    <code class="fcode"><span class="c"># リポに置いてコミット</span>
+<span class="dir">&lt;repo&gt;/CLAUDE.md</span>                  <span class="c"># スタック・規約・禁止事項（簡潔に）</span>
+<span class="dir">&lt;repo&gt;/.mcp.json</span>                  <span class="c"># 共有MCP（秘密は直書きしない）</span>
+<span class="dir">&lt;repo&gt;/.claude/settings.json</span>      <span class="c"># 下記を入れる</span>
+    └─ permissions.allow   <span class="c"># 通す定番コマンド</span>
+    └─ permissions.deny    <span class="c"># rm / .env / secrets / WebFetch</span>
+    └─ disableBypassPermissionsMode: <span class="s">"disable"</span>
+    └─ hooks.PostToolUse   <span class="c"># 自動整形</span>
+    └─ hooks.PreToolUse    <span class="c"># 本番/ pushを要レビュー（ゲート）</span>
+
+<span class="c"># 各自ローカル（gitignore）</span>
+<span class="dir">.claude/settings.local.json</span>       <span class="c"># 個人の上書きだけ</span></code>
+    <p class="conc">原則は<b>「共有はコミット・個人は local・強制はフック・秘密は deny」</b>。優先順位（Managed &gt; 引数 &gt; local &gt; 共有 &gt; user）と <code>/status</code> を覚えておけば事故らない。</p>
+  </div>
+
+  <footer>Claude Code — settings cheat sheet / verify with /config &amp; /status — checked 2026-06-11 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(block){
+    var text = block.innerText;
+    var btn = document.createElement('button');
+    btn.className = 'copybtn';
+    btn.type = 'button';
+    btn.textContent = 'copy';
+    function done(){ btn.textContent='copied!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='copy'; btn.classList.remove('done'); }, 1300); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='手動で選択'; }
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }catch(e){ fallback(); }
+    });
+    block.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

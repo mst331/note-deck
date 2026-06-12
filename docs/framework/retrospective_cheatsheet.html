@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>振り返り・障害対応の型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:730px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:730px;}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--red-bg);}.mode.m2{background:var(--green-bg);}.mode.m3{background:var(--purple-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
+  .mode.m1 .en{color:var(--red);}.mode.m2 .en{color:var(--green);}.mode.m3 .en{color:var(--purple);}
+  .mode .jp{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.15;margin:7px 0 8px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
+  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
+  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .tok{font-family:var(--mono);font-weight:700;font-size:12px;padding:6px 10px;border:2px solid #fff;color:#fff;}
+  .tok.r{border-color:var(--red);color:#ff9b92;}.tok.b{border-color:var(--blue);color:#9fb0ff;}.tok.p{border-color:var(--purple);color:#c9a4ff;}.tok.g{border-color:var(--green);color:#6fe3b6;}.tok.y{border-color:var(--yellow);color:var(--yellow);}
+  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
+
+  section{padding:50px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
+
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+  .pill{font-family:var(--mono);font-weight:700;font-size:11px;padding:2px 8px;border:2px solid var(--ink);white-space:nowrap;display:inline-block;}
+  .pill.s1{background:var(--red);color:#fff;border-color:var(--red);}
+  .pill.s2{background:var(--yellow);}
+  .pill.s3{background:var(--green-bg);}
+
+  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
+    font-family:var(--mono);font-size:12.5px;line-height:1.9;padding:32px 17px 15px;margin:12px 0 16px;overflow-x:auto;white-space:pre-wrap;}
+  .code .k{color:#7fd6ff;font-weight:700;}.code .v{color:#ffd84d;}.code .c{color:#7c8597;}.code .e{color:#9fe6b8;}
+  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s;}
+  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
+  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:12px 0 14px;}
+  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
+  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:4px;}
+  .gc .gd{font-size:12.5px;color:#333;line-height:1.6;}
+  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
+  .note.r{border-left-color:var(--red);background:var(--red-bg);}
+  .note.g{border-left-color:var(--green);background:var(--green-bg);}
+  .note b{font-weight:700;}.note code{font-family:var(--mono);font-weight:700;background:#fff;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;}
+  .chk{border:2px solid #444;padding:11px 13px;font-size:13px;line-height:1.5;}
+  .chk b{color:var(--yellow);}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+
+  a.xref{color:var(--blue);font-weight:700;text-decoration:underline;text-decoration-color:rgba(31,61,240,.4);text-underline-offset:2px;}
+  a.xref:hover{text-decoration-color:var(--blue);}
+  .final a.xref{color:#ffd84d;text-decoration-color:rgba(255,216,77,.5);}
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.code,.final,.note,.shead .num{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; RETROSPECTIVE / POSTMORTEM</span>
+    <span>振り返り・障害対応 ― CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">振り返り</span>の型<span class="dot">.</span></h1>
+    <p class="sub">振り返り・障害対応 ― KPT / ポストモーテム</p>
+    <p class="thesis"><b>振り返りは犯人探しでなく、仕組み直し。</b>人を責めず、事実 → 原因 → 対策を回す。</p>
+    <p class="lead">軽い振り返りは KPT、障害の深掘りは ポストモーテム。タイムライン・なぜなぜ・恒久対策で、同じ失敗を繰り返さない仕組みにする。</p>
+  </header>
+
+  <!-- CORE -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">BLAMELESS</div>
+      <div class="jp">人を責めない</div>
+      <div class="desc">問題にするのは人でなく仕組み・プロセス。責めると事実が隠れ、再発する。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">KPT</div>
+      <div class="jp">軽い振り返り</div>
+      <div class="desc">Keep / Problem / Try。定例やプロジェクト末に。Try は具体的に1〜3個。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">POSTMORTEM</div>
+      <div class="jp">障害の深掘り</div>
+      <div class="desc">タイムライン → 根本原因 → 恒久対策。担当と期限をつけて横展開。</div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow rv">
+    <div class="flabel">障害対応の流れ</div>
+    <div class="seq">
+      <span class="tok r">検知</span><span class="arr">→</span>
+      <span class="tok r">止血(暫定復旧)</span><span class="arr">→</span>
+      <span class="tok b">タイムライン記録</span><span class="arr">→</span>
+      <span class="tok p">なぜなぜ(根本原因)</span><span class="arr">→</span>
+      <span class="tok g">恒久対策</span><span class="arr">→</span>
+      <span class="tok y">横展開・共有</span>
+    </div>
+  </div>
+
+  <!-- 01 原則 -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">01</span><h2>まず原則（Blameless）</h2><span class="tag">PRINCIPLE</span></div>
+    <p class="lede">最重要。<b>人でなく仕組みを問題にする</b>。責めると、次から事実が出てこなくなる。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">仕組みを責める</div><div class="gd">「誰がミスした」でなく「なぜミスできてしまう仕組みだったか」。同じ状況なら誰でも起こす前提で。</div></div>
+      <div class="gc"><div class="gt">心理的安全性</div><div class="gd">正直に話して不利にならない場をつくる。隠蔽が一番のリスク。</div></div>
+      <div class="gc"><div class="gt">事実と解釈を分ける</div><div class="gd">起きたこと（事実）と、こうだろう（解釈）を混ぜない。<a class="xref" href="thinking_cheatsheet.html">空・雨・傘</a>の作法。</div></div>
+    </div>
+  </section>
+
+  <!-- 02 KPT -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">02</span><h2>KPT（軽い振り返り）</h2><span class="tag">RETRO</span></div>
+    <p class="lede">定例やプロジェクト末の定番。短時間で「続ける・直す・試す」を出す。</p>
+    <div class="code"><span class="c"># KPT</span>
+<span class="k">Keep（続ける）</span>    うまくいったこと・続けたいこと
+<span class="k">Problem（課題）</span>   困った・うまくいかなかったこと
+<span class="k">Try（次やる）</span>     次に試すこと <span class="e">（具体的に1〜3個・担当をつける）</span></div>
+    <div class="note"><b>コツ：</b>Try を出して終わりにしない。<b>担当と期限</b>をつけ、次回の Keep/Problem で結果を見る。回すから効く。</div>
+    <div class="note g"><b>派生：</b>Try に Action を明示した <b>KPTA</b>、日本発の <b>YWT</b>（やったこと／わかったこと／つぎやること）も同系統。チームに馴染む型を選べばよい。</div>
+  </section>
+
+  <!-- 03 初動 -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">03</span><h2>障害の初動</h2><span class="tag">RESPONSE</span></div>
+    <p class="lede">障害発生時は<b>復旧（止血）が最優先</b>。原因究明は後。並行して記録を始める。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">止血を優先</div><div class="gd">まず影響を止める（ロールバック・切替・遮断）。原因の完全解明は復旧後でよい。</div></div>
+      <div class="gc"><div class="gt">記録を即開始</div><div class="gd">何時に何をしたかを<b>その場で</b>残す。後で思い出せない。タイムラインの素になる。</div></div>
+      <div class="gc"><div class="gt">役割を決める</div><div class="gd">指揮（判断）・対応（手を動かす）・連絡（社内外共有）を分ける。一人で抱えない。</div></div>
+      <div class="gc"><div class="gt">状況共有</div><div class="gd">分かっている事実だけを定期共有。「不明」も正直に。憶測を断定で流さない。</div></div>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>重大度</th><th>目安</th><th>対応</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill s1">Sev1</span></td><td>主要機能の全停止・広範な影響</td><td>即時・全力。経営にも即共有</td></tr>
+          <tr><td><span class="pill s2">Sev2</span></td><td>一部機能の障害・回避策あり</td><td>当日対応。関係者へ共有</td></tr>
+          <tr><td><span class="pill s3">Sev3</span></td><td>軽微・限定的</td><td>通常運用の中で対応</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 04 タイムライン -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">04</span><h2>タイムライン</h2><span class="tag">TIMELINE</span></div>
+    <p class="lede">時刻ベースで<b>事実だけ</b>を時系列に。後の分析と文書の土台になる。</p>
+    <div class="code"><span class="c"># タイムライン（事実のみ・時刻つき）</span>
+<span class="k">10:02</span>  監視アラート発報（5xx 急増）       <span class="c">← 検知</span>
+<span class="k">10:15</span>  原因切り分け開始
+<span class="k">10:40</span>  直近デプロイをロールバック         <span class="c">← 止血</span>
+<span class="k">10:52</span>  エラー率が平常へ                  <span class="c">← 復旧</span>
+<span class="k">11:30</span>  根本原因の調査開始
+<span class="c"># 解釈・推測はここに混ぜない（別欄に）</span></div>
+    <div class="note"><b>計測の観点：</b>「発生→検知」までの時間（MTTD）と「検知→復旧」までの時間（MTTR）を出す。<b>検知が遅いほど被害が伸びる</b>ので、まず検知を早める改善が効く。</div>
+  </section>
+
+  <!-- 05 根本原因 -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">05</span><h2>根本原因分析（なぜなぜ）</h2><span class="tag">ROOT CAUSE</span></div>
+    <p class="lede">表層で止めない。<b>「なぜ」を繰り返し</b>、仕組みの原因まで降りる。</p>
+    <div class="code"><span class="c"># なぜなぜ分析（5 Whys）</span>
+事象: <span class="v">{何が起きたか}</span>
+ なぜ①? <span class="v">{直接の原因}</span>
+  なぜ②? <span class="v">{その原因}</span>
+   なぜ③? <span class="v">{さらに}</span>
+    なぜ④? <span class="v">{さらに}</span>
+     なぜ⑤? <span class="v">{根本原因 → ここに対策を打つ}</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">「人の不注意」で止めない</div><div class="gd">そこで止まったら「なぜ不注意が起こせる仕組みか」を更に問う。仕組みが根本。</div></div>
+      <div class="gc"><div class="gt">原因は1つとは限らない</div><div class="gd">線形に詰めすぎない。特性要因図（フィッシュボーン：人/方法/設備/環境…）で複数要因も洗う。</div></div>
+    </div>
+  </section>
+
+  <!-- 06 恒久対策 -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">06</span><h2>恒久対策</h2><span class="tag">FIX</span></div>
+    <p class="lede"><b>暫定（その場しのぎ）と恒久（再発防止）を分ける</b>。対策は3方向で考える。</p>
+    <div class="grid">
+      <div class="gc"><div class="gt">起きにくく</div><div class="gd">発生確率を下げる。仕組み・自動化・ガード（例：誤操作できないUI、CIで検知）。</div></div>
+      <div class="gc"><div class="gt">早く気づく</div><div class="gd">検知を速くする（MTTD短縮）。監視・アラート・しきい値。気づくのが遅い障害ほど痛い。</div></div>
+      <div class="gc"><div class="gt">影響を小さく</div><div class="gd">起きても被害を限定（段階リリース・切り戻し容易化・冗長化）。</div></div>
+      <div class="gc"><div class="gt">対策にオーナーと期限</div><div class="gd">「気をつける」は対策ではない。<b>チケット化</b>して担当・期限・完了条件を付ける。</div></div>
+    </div>
+  </section>
+
+  <!-- 07 文書 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">07</span><h2>ポストモーテム文書</h2><span class="tag">DOC</span></div>
+    <p class="lede">Blameless で書き、<b>共有して横展開</b>する。他システムにも同じリスクが無いか確認するのが肝。</p>
+    <div class="code"><span class="c"># ポストモーテム（Blameless）</span>
+<span class="k">1. 概要</span>      何が・いつ・どれくらいの時間
+<span class="k">2. 影響</span>      ユーザー / 売上 / 範囲・継続時間
+<span class="k">3. タイムライン</span> 時刻ベースの事実（検知→止血→復旧）
+<span class="k">4. 根本原因</span>   なぜなぜ / 特性要因（表層でなく根本）
+<span class="k">5. 対策</span>      暫定 / 恒久（担当・期限つき）
+<span class="k">6. 学び・横展開</span> 他にも同じリスクは? 共有先は?</div>
+    <div class="note"><b>運用：</b>重大度の高い障害（Sev1/2）は必ず実施。対策は<b>完了まで追跡</b>し、後日のレビューで閉じる。書いて終わり・対策やりっぱなしが最大の無駄。</div>
+  </section>
+
+  <!-- 08 アンチパターン -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">08</span><h2>アンチパターン</h2><span class="tag">PITFALLS</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">犯人探し</div><div class="gd">人を責めると事実が隠れ、再発する。仕組みを責める。</div></div>
+      <div class="gc"><div class="gt">「気をつけます」で終了</div><div class="gd">精神論は対策でない。仕組み・自動化に落とす。</div></div>
+      <div class="gc"><div class="gt">表層原因で止める</div><div class="gd">直接原因だけ直して再発。なぜを繰り返す。</div></div>
+      <div class="gc"><div class="gt">対策が放置</div><div class="gd">オーナー・期限なしのTODOは消える。チケット化。</div></div>
+      <div class="gc"><div class="gt">振り返り自体をやらない</div><div class="gd">忙しさで飛ばす。短くても必ず回す。</div></div>
+      <div class="gc"><div class="gt">学びを共有しない</div><div class="gd">同じ穴に別チームが落ちる。横展開する。</div></div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">振り返り 1枚チェック</div>
+    <div class="fs">これが言えたら次に活きる</div>
+    <div class="checks">
+      <div class="chk"><b>人でなく仕組み</b>を責めたか</div>
+      <div class="chk"><b>事実と解釈</b>を分けたか（時刻つき）</div>
+      <div class="chk">なぜを繰り返し<b>根本原因</b>まで降りたか</div>
+      <div class="chk">対策は<b>起きにくく/早く気づく/影響小</b>か</div>
+      <div class="chk">対策に<b>担当・期限</b>があるか</div>
+      <div class="chk">学びを<b>横展開</b>したか</div>
+    </div>
+    <p class="conc">結論：<b>犯人探しでなく仕組み直し。事実→根本原因→（担当つき）恒久対策を回し、横展開する。</b>これで同じ失敗を繰り返さない。</p>
+  </div>
+
+  <footer>振り返り・障害対応の型 ― framework series — checked 2026-06-12 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(block){
+    var text = block.innerText;
+    var btn = document.createElement('button');
+    btn.className = 'copybtn'; btn.type = 'button'; btn.textContent = 'copy';
+    function done(){ btn.textContent='copied!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='copy'; btn.classList.remove('done'); }, 1300); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='手動で選択'; }
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }catch(e){ fallback(); }
+    });
+    block.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

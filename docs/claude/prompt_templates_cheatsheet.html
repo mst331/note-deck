@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>実務プロンプト型集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:730px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:730px;}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--blue-bg);}.mode.m2{background:var(--green-bg);}.mode.m3{background:var(--yellow-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
+  .mode.m1 .en{color:var(--blue);}.mode.m2 .en{color:var(--green);}.mode.m3 .en{color:#7a6200;}
+  .mode .jp{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.15;margin:7px 0 8px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  section{padding:50px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
+  .use{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--muted);margin:0 0 8px;letter-spacing:.02em;}
+  .use::before{content:"▸ 使いどころ ";color:var(--blue);}
+
+  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
+    font-family:var(--mono);font-size:12.5px;line-height:1.85;padding:32px 17px 15px;margin:10px 0 16px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;}
+  .code .t{color:#c9a4ff;font-weight:700;}   /* tags */
+  .code .v{color:#ffd84d;}                    /* {placeholder} */
+  .code .c{color:#7c8597;}                    /* comment */
+  .code .e{color:#9fe6b8;}                     /* emphasis */
+  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;border-radius:0;transition:background .12s,color .12s;}
+  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
+  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:12px 0 14px;}
+  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
+  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:4px;}
+  .gc .gd{font-size:12.5px;color:#333;line-height:1.6;}
+  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.7;}
+  .note b{font-weight:700;}.note code{font-family:var(--mono);font-weight:700;background:#fff;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
+  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
+  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  .final .fcode{font-family:var(--mono);font-size:12.5px;line-height:1.95;white-space:pre-wrap;display:block;}
+  .final .fcode .t{color:#c9a4ff;font-weight:700;}.final .fcode .c{color:#8a93a6;}.final .fcode .y{color:#ffd84d;}
+  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
+  .final .conc b{color:var(--yellow);}
+
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.code,.gc,.final,.note,.shead .num{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; PROMPTING / TEMPLATES</span>
+    <span>実務プロンプト ― CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">プロンプト</span>の型<span class="dot">.</span></h1>
+    <p class="sub">実務テンプレート集 ― 流し込むだけ</p>
+    <p class="thesis"><b>いいプロンプト＝明確・文脈・例・形式指定。</b>型を持てば、毎回ゼロから書かなくていい。</p>
+    <p class="lead">基本骨格に、レビュー・バグ調査・移行・ドキュメント・技術選定・文書作成の型を用意。<span style="font-family:var(--mono)">{…}</span> を埋めて使う。タグ名は自由（日本語でも可）だが、ここでは標準的な英語タグで統一。</p>
+  </header>
+
+  <!-- PRINCIPLES -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">BE EXPLICIT</div>
+      <div class="jp">明確・具体に</div>
+      <div class="desc">曖昧さを消す。何を・どの形で欲しいかを正確に。「〜するな」より「〜して」。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">GIVE CONTEXT</div>
+      <div class="jp">文脈と「なぜ」</div>
+      <div class="desc">目的・背景・制約を渡す。理由が分かると狙い通りに動く。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">SHOW THE SHAPE</div>
+      <div class="jp">例・形式を示す</div>
+      <div class="desc">出力形式を指定し、例を1つ。形が固まると品質が安定する。</div>
+    </div>
+  </div>
+
+  <!-- 01 基本骨格 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">01</span><h2>基本骨格（これに流し込む）</h2><span class="tag">SKELETON</span></div>
+    <p class="lede">迷ったらこの6ブロック。以下の各テンプレも全部この変形。</p>
+    <div class="code"><span class="t">&lt;role&gt;</span><span class="v">{あなたは“どんな専門家”か}</span><span class="t">&lt;/role&gt;</span>
+<span class="t">&lt;context&gt;</span>
+  <span class="v">{プロジェクト・背景}</span>。目的は <span class="v">{なぜこれをやるか}</span>。
+<span class="t">&lt;/context&gt;</span>
+<span class="t">&lt;instructions&gt;</span>
+  <span class="v">{やってほしいこと。具体的に・手順で}</span>
+  確証がない箇所は<span class="e">推測と明記</span>。不明点は<span class="e">実装前に質問</span>。
+<span class="t">&lt;/instructions&gt;</span>
+<span class="t">&lt;input&gt;</span> <span class="v">{対象のコード／ログ／文章}</span> <span class="t">&lt;/input&gt;</span>
+<span class="t">&lt;output_format&gt;</span> <span class="v">{箇条書き／表／JSON／PREP など。例を1つ}</span> <span class="t">&lt;/output_format&gt;</span>
+<span class="t">&lt;constraints&gt;</span> <span class="v">{守る条件・やってはいけないこと}</span> <span class="t">&lt;/constraints&gt;</span></div>
+    <div class="note"><b>タグは自由：</b><code>&lt;入力&gt;</code> など日本語でもよい。大事なのは「区切りで役割を分ける」こと。難しいタスクは Plan モードや思考オン、ダメなら<b>分割</b>（プロンプトチェーン）。</div>
+  </section>
+
+  <!-- 02 レビュー -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">02</span><h2>コードレビュー</h2><span class="tag">REVIEW</span></div>
+    <p class="use">PR・差分の品質チェック。重要度つきで指摘がほしい時。</p>
+    <div class="code"><span class="t">&lt;role&gt;</span>厳しめだが建設的なコードレビュアー。<span class="t">&lt;/role&gt;</span>
+<span class="t">&lt;context&gt;</span>Next.js(App Router)。本番前のPR。重視: 可読性・パフォーマンス・セキュリティ。<span class="t">&lt;/context&gt;</span>
+<span class="t">&lt;instructions&gt;</span>
+  下の差分をレビューし、指摘を<span class="e">重要度(高/中/低)</span>で分類。
+  各指摘に「理由」と「修正案(コード)」を付ける。良い点も1〜2個。
+  確証がない所は推測と明記。
+<span class="t">&lt;/instructions&gt;</span>
+<span class="t">&lt;input&gt;</span> <span class="v">{git diff をここに貼る}</span> <span class="t">&lt;/input&gt;</span>
+<span class="t">&lt;output_format&gt;</span> 表: 重要度 / ファイル:行 / 指摘 / 理由 / 修正案 <span class="t">&lt;/output_format&gt;</span></div>
+  </section>
+
+  <!-- 03 バグ調査 -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">03</span><h2>バグ調査・原因究明</h2><span class="tag">DEBUG</span></div>
+    <p class="use">ログ・エラーから原因の当たりをつけたい時。事実と推測を分ける。</p>
+    <div class="code"><span class="t">&lt;role&gt;</span>原因究明が得意なSRE。<span class="t">&lt;/role&gt;</span>
+<span class="t">&lt;context&gt;</span>環境: <span class="v">{EC2 / Next.js / CloudFront 等}</span>。症状: <span class="v">{何がいつ起きているか}</span>。<span class="t">&lt;/context&gt;</span>
+<span class="t">&lt;instructions&gt;</span>
+  下のログ/エラーから、考えられる原因を<span class="e">可能性の高い順</span>に挙げる。
+  各原因に「根拠(ログのどの行か)」「確認方法(コマンド)」「対処」を付ける。
+  <span class="e">事実と推測を分けて</span>書く。情報が足りなければ何が必要か言う。
+<span class="t">&lt;/instructions&gt;</span>
+<span class="t">&lt;input&gt;</span> <span class="v">{ログ / エラー / 再現手順}</span> <span class="t">&lt;/input&gt;</span>
+<span class="t">&lt;output_format&gt;</span> 原因(高→低) / 根拠 / 確認コマンド / 対処 <span class="t">&lt;/output_format&gt;</span></div>
+  </section>
+
+  <!-- 04 移行・リファクタ -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">04</span><h2>移行・リファクタ</h2><span class="tag">MIGRATE</span></div>
+    <p class="use">PHP/Blade/WP → Next.js の移植。対応関係も一緒に出させる。</p>
+    <div class="code"><span class="t">&lt;role&gt;</span>PHP→Next.js移行に詳しいエンジニア。<span class="t">&lt;/role&gt;</span>
+<span class="t">&lt;context&gt;</span>元: <span class="v">{Laravel Blade / WP テンプレ}</span>。先: Next.js App Router(v16, RSC)。<span class="t">&lt;/context&gt;</span>
+<span class="t">&lt;instructions&gt;</span>
+  下を Server Component に移植する。
+  - ルーティング / データ取得 / メタデータ の<span class="e">対応表</span>を示す
+  - ブラウザ動作が要る所だけ <span class="e">'use client'</span>
+  - 変更理由をコメントで。不明点は実装前に質問
+<span class="t">&lt;/instructions&gt;</span>
+<span class="t">&lt;input&gt;</span> <span class="v">{元のコード}</span> <span class="t">&lt;/input&gt;</span>
+<span class="t">&lt;output_format&gt;</span> 移植後コード + 対応表(旧→新) + 注意点 <span class="t">&lt;/output_format&gt;</span></div>
+  </section>
+
+  <!-- 05 ドキュメント化 -->
+  <section class="acc-yellow rv">
+    <div class="shead"><span class="num">05</span><h2>ドキュメント化・要約</h2><span class="tag">DOC</span></div>
+    <p class="use">コード・議事録・設計判断を、読み手に合わせて要約。</p>
+    <div class="code"><span class="t">&lt;role&gt;</span>テクニカルライター。<span class="t">&lt;/role&gt;</span>
+<span class="t">&lt;context&gt;</span>読み手: <span class="v">{新メンバー / 経営層}</span>。用途: <span class="v">{オンボーディング / 報告}</span>。<span class="t">&lt;/context&gt;</span>
+<span class="t">&lt;instructions&gt;</span>
+  下を <span class="v">{300字 / 1ページ}</span> で要約。<span class="e">結論を先に(PREP)</span>。
+  専門用語は最小限。<span class="e">事実と解釈を分ける</span>。
+<span class="t">&lt;/instructions&gt;</span>
+<span class="t">&lt;input&gt;</span> <span class="v">{コード / 議事録 / 設計判断}</span> <span class="t">&lt;/input&gt;</span>
+<span class="t">&lt;output_format&gt;</span> 結論 → 理由 → 具体例 → 結論。見出し付き。 <span class="t">&lt;/output_format&gt;</span></div>
+  </section>
+
+  <!-- 06 技術選定 -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">06</span><h2>設計・技術選定（比較）</h2><span class="tag">DECIDE</span></div>
+    <p class="use">選択肢を中立に比較し、前提つきで推奨がほしい時。</p>
+    <div class="code"><span class="t">&lt;role&gt;</span>中立な技術アドバイザー。立場を持ちすぎない。<span class="t">&lt;/role&gt;</span>
+<span class="t">&lt;instructions&gt;</span>
+  <span class="v">{課題}</span> に対する選択肢を<span class="e">2〜3個</span>挙げ、比較表で評価。
+  評価軸: <span class="v">{コスト / 学習コスト / 保守性 / 移行容易性}</span>。
+  各案のメリット・デメリット・向くケースを書く。
+  最後に<span class="e">前提つきで推奨を1つ</span>。反対意見も添える。
+<span class="t">&lt;/instructions&gt;</span>
+<span class="t">&lt;output_format&gt;</span> 比較表 + 推奨(前提つき) + 主なリスク <span class="t">&lt;/output_format&gt;</span></div>
+  </section>
+
+  <!-- 07 文書作成 -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">07</span><h2>文書作成（PREP / エスカレーション）</h2><span class="tag">WRITE</span></div>
+    <p class="use">上長・経営向けの報告やエスカレーション。事実と解釈を分けて。</p>
+    <div class="code"><span class="t">&lt;role&gt;</span>社内向け報告・エスカレーション文書の起草者。<span class="t">&lt;/role&gt;</span>
+<span class="t">&lt;context&gt;</span>宛先: <span class="v">{上長 / 経営}</span>。経緯: <span class="v">{時系列の事実}</span>。<span class="t">&lt;/context&gt;</span>
+<span class="t">&lt;instructions&gt;</span>
+  <span class="e">PREP(結論→理由→具体例→結論)</span>で起草。
+  「<span class="e">事実</span>」と「<span class="e">私の解釈</span>」を明確に分ける。
+  感情語・過度な断定を避ける。引用は<span class="e">発言者と日時</span>を明記。
+  依頼事項を最後に箇条書き。
+<span class="t">&lt;/instructions&gt;</span>
+<span class="t">&lt;input&gt;</span> <span class="v">{時系列ログ / チャット抜粋}</span> <span class="t">&lt;/input&gt;</span>
+<span class="t">&lt;output_format&gt;</span> 結論 / 事実(時系列) / 解釈 / 依頼事項 <span class="t">&lt;/output_format&gt;</span></div>
+  </section>
+
+  <!-- 08 要件→チケット -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">08</span><h2>要件整理 → チケット化</h2><span class="tag">TICKET</span></div>
+    <p class="use">ざっくり要望を、Backlog 等の実装可能なチケットに分解したい時。</p>
+    <div class="code"><span class="t">&lt;role&gt;</span>要件を実装可能な単位に分解するPM／テックリード。<span class="t">&lt;/role&gt;</span>
+<span class="t">&lt;context&gt;</span>課題管理: <span class="v">{Backlog 等。プロジェクト / チケット形式}</span>。読み手: 実装担当。<span class="t">&lt;/context&gt;</span>
+<span class="t">&lt;instructions&gt;</span>
+  下のざっくり要望を、<span class="e">実装可能なチケット</span>に分解する。
+  各チケットに「目的」「受け入れ条件(Done)」「想定作業」「依存」「規模(S/M/L)」を付ける。
+  曖昧な点は <span class="e">{確認事項}</span> として別出しにする。
+<span class="t">&lt;/instructions&gt;</span>
+<span class="t">&lt;input&gt;</span> <span class="v">{要望・背景}</span> <span class="t">&lt;/input&gt;</span>
+<span class="t">&lt;output_format&gt;</span> チケット一覧(タイトル / 目的 / Done / 作業 / 依存 / 規模) ＋ 確認事項 <span class="t">&lt;/output_format&gt;</span></div>
+  </section>
+
+  <!-- 09 テスト生成 -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">09</span><h2>テスト生成</h2><span class="tag">TEST</span></div>
+    <p class="use">関数・コンポーネントのテストを、観点を網羅して書かせたい時。</p>
+    <div class="code"><span class="t">&lt;role&gt;</span>テスト設計が得意なエンジニア。<span class="t">&lt;/role&gt;</span>
+<span class="t">&lt;context&gt;</span>対象: <span class="v">{言語/FW 例: TypeScript + Vitest}</span>。方針: 正常系＋異常系＋境界値。<span class="t">&lt;/context&gt;</span>
+<span class="t">&lt;instructions&gt;</span>
+  下の関数/コンポーネントのテストを書く。
+  - <span class="e">正常系・異常系・境界値</span>を網羅し、各テストの意図をコメント
+  - モックが要る依存は明示
+  - 仕様が不足する所は <span class="e">{要確認}</span> として挙げる
+<span class="t">&lt;/instructions&gt;</span>
+<span class="t">&lt;input&gt;</span> <span class="v">{対象コード}</span> <span class="t">&lt;/input&gt;</span>
+<span class="t">&lt;output_format&gt;</span> テストコード ＋ カバーした観点の一覧 ＋ 要確認 <span class="t">&lt;/output_format&gt;</span></div>
+  </section>
+
+  <!-- 10 効かせるコツ -->
+  <section class="acc-ink rv">
+    <div class="shead"><span class="num">10</span><h2>効かせるコツ</h2><span class="tag">TIPS</span></div>
+    <div class="grid">
+      <div class="gc"><div class="gt">明確・具体に</div><div class="gd">曖昧を消す。複数解釈できる指示は割れる。</div></div>
+      <div class="gc"><div class="gt">「なぜ」を書く</div><div class="gd">目的・背景があると狙い通りに動く。</div></div>
+      <div class="gc"><div class="gt">例を1つ見せる</div><div class="gd">形式・粒度が一発で固まる。</div></div>
+      <div class="gc"><div class="gt">出力形式を指定</div><div class="gd">表 / JSON / PREP など。後工程が楽。</div></div>
+      <div class="gc"><div class="gt">長文は指示を後ろに</div><div class="gd">大量の入力の<b>後</b>に指示を置くと拾われやすい。</div></div>
+      <div class="gc"><div class="gt">難しいタスクは思考オン</div><div class="gd">Plan モード／思考モード（adaptive thinking）。難所にだけ厚く。</div></div>
+      <div class="gc"><div class="gt">ダメなら分割</div><div class="gd">1プロンプトで欲張らず、段階に分ける。</div></div>
+      <div class="gc"><div class="gt">やることを言う</div><div class="gd">「〜するな」より「〜して」。肯定形で。</div></div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <div class="final rv">
+    <div class="ft">骨格だけ覚える</div>
+    <div class="fs">これさえあれば毎回作れる</div>
+    <code class="fcode"><span class="t">&lt;role&gt;</span>      <span class="c">どんな専門家か</span>
+<span class="t">&lt;context&gt;</span>   <span class="c">背景 ＋ なぜ</span>
+<span class="t">&lt;instructions&gt;</span> <span class="c">やること（具体・手順）</span>
+<span class="t">&lt;input&gt;</span>     <span class="c">対象（コード/ログ/文章）</span>
+<span class="t">&lt;output_format&gt;</span> <span class="c">形式（表/JSON/PREP）＋例1つ</span>
+<span class="t">&lt;constraints&gt;</span> <span class="c">守る条件・禁止</span>
+
+<span class="c"># プラスα</span>
+・例を1つ見せる   ・出力形式を指定
+・長文は指示を後ろ ・難所は思考オン ・ダメなら分割</code>
+    <p class="conc">結論：<b>役割・文脈(なぜ)・具体指示・入力・出力形式・制約</b>の6点を埋めるだけ。あとは例を1つと形式指定で、品質はだいたい安定する。</p>
+  </div>
+
+  <footer>実務プロンプト型集 ― fill the {…} and go — checked 2026-06-11 · <a href="../index.html">↑ index</a></footer>
+
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.code').forEach(function(block){
+    var text = block.innerText;
+    var btn = document.createElement('button');
+    btn.className = 'copybtn';
+    btn.type = 'button';
+    btn.textContent = 'copy';
+    function done(){ btn.textContent='copied!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='copy'; btn.classList.remove('done'); }, 1300); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='手動で選択'; }
+      document.body.removeChild(ta);
+    }
+    btn.addEventListener('click', function(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }catch(e){ fallback(); }
+    });
+    block.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>
