@@ -45,7 +45,7 @@
   .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
   .mode.m1{background:var(--blue-bg);}.mode.m2{background:var(--green-bg);}.mode.m3{background:var(--yellow-bg);}
   .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
-  .mode.m1 .en{color:var(--blue);}.mode.m2 .en{color:var(--green);}.mode.m3 .en{color:#7a6200;}
+  .mode.m1 .en{color:var(--blue);}.mode.m2 .en{color:var(--green);}.mode.m3 .en{color:var(--ydeep,#7a6200);}
   .mode .jp{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.15;margin:7px 0 8px;}
   .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
 
@@ -102,6 +102,8 @@
   @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
   @media print{body{background:#fff;}.mode,.code,.gc,.final,.note,.shead .num{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
 </style>
+<link rel="stylesheet" href="../assets/swiss-pop-dark.css">
+<script src="../assets/theme.js"></script>
 </head>
 <body>
 <div class="wrap">

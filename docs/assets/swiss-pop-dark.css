@@ -1,0 +1,91 @@
+/* ============================================================
+   Note Deck — swiss-pop dark theme
+   全ページ共通。[data-theme="dark"] 配下のみ作用し、ライトは不変。
+   印刷は @media screen ガードにより常にライト配色。
+   ============================================================ */
+
+/* テーマ切替チップ（theme.js が .meta 右端に注入。ライトでも表示） */
+.meta .themetoggle{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;
+  color:#141414;background:var(--yellow);border:2px solid #141414;box-shadow:2px 2px 0 #141414;
+  padding:3px 9px;margin-left:10px;cursor:pointer;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+.meta .themetoggle:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #141414;}
+@media print{.meta .themetoggle{display:none;}}
+
+@media screen{
+
+:root{color-scheme:light;}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ink:#f1eee6;--paper:#141414;--card:#1d1d1b;--line:#e8e2d6;--muted:#aaa49a;
+  --blue:#8f9cff;--blue-bg:#202641;
+  --red:#ff766d;--red-bg:#38201e;
+  --yellow:#f2c94c;--yellow-bg:#332b15;
+  --green:#45d39a;--green-bg:#183227;
+  --purple:#a98cff;--purple-bg:#29213d;
+  --ydeep:#f2c94c; /* ライトの #7a6200（黄背景上の濃黄文字）の暗所用 */
+}
+
+/* ---------- 影: アイボリー/黄の強い段差 → チャコール系の控えめな段差 ---------- */
+[data-theme="dark"] .meta a.back{color:#141414;border-color:#141414;box-shadow:2px 2px 0 #3a3935;}
+[data-theme="dark"] .meta .themetoggle{box-shadow:2px 2px 0 #3a3935;}
+[data-theme="dark"] .meta a.back:hover,[data-theme="dark"] .meta .themetoggle:hover{box-shadow:3px 3px 0 #3a3935;}
+[data-theme="dark"] footer a{color:#141414;border-color:#141414;box-shadow:2px 2px 0 #3a3935;}
+[data-theme="dark"] footer a:hover{box-shadow:3px 3px 0 #3a3935;}
+[data-theme="dark"] .shead .num,[data-theme="dark"] .keyrow,[data-theme="dark"] .crow,
+[data-theme="dark"] .pbox,[data-theme="dark"] .chead .bar,[data-theme="dark"] .pcard .pb .code{box-shadow:3px 3px 0 #3a3935;}
+[data-theme="dark"] .gc,[data-theme="dark"] .pitem,[data-theme="dark"] .lk,
+[data-theme="dark"] .cell,[data-theme="dark"] .kau .step{box-shadow:4px 4px 0 #3a3935;}
+[data-theme="dark"] .tbl,[data-theme="dark"] .code,[data-theme="dark"] .pcard,
+[data-theme="dark"] .repo,[data-theme="dark"] .card{box-shadow:5px 5px 0 #3a3935;}
+[data-theme="dark"] .mode{box-shadow:6px 6px 0 #3a3935;}
+[data-theme="dark"] .keyrow:hover,[data-theme="dark"] .crow:hover{box-shadow:5px 5px 0 #3a3935;}
+[data-theme="dark"] .card:hover{box-shadow:8px 8px 0 #3a3935;}
+[data-theme="dark"] .flow{box-shadow:6px 6px 0 rgba(242,201,76,.45);}
+[data-theme="dark"] .final{box-shadow:8px 8px 0 rgba(242,201,76,.45);}
+
+/* ---------- カード（index）: 面はチャコール、カテゴリ色は上部バー等のアクセントに限定 ---------- */
+[data-theme="dark"] .card{background:var(--card);border-color:var(--line);}
+
+/* ---------- 黒ベタブロック（flow / final）: 紙より一段深いチャコール ---------- */
+[data-theme="dark"] .flow,[data-theme="dark"] .final{background:#191917;color:var(--ink);}
+[data-theme="dark"] :where(.tok){border-color:rgba(241,238,230,.85);color:var(--ink);}
+[data-theme="dark"] .chk,[data-theme="dark"] .rule{border-color:#3a3935;}
+[data-theme="dark"] .final .conc{border-top-color:#33332f;}
+[data-theme="dark"] .final a.xref{color:var(--yellow);text-decoration-color:rgba(242,201,76,.5);}
+
+/* ---------- インクで刷る要素の反転（帯・チップ） ---------- */
+[data-theme="dark"] thead{background:#24241f;color:var(--ink);}
+[data-theme="dark"] .gband .gn,[data-theme="dark"] .acc-ink .num,[data-theme="dark"] .acc-ink .tag{color:var(--paper);}
+
+/* ---------- アクセント地のチップ類: 明色化したアクセントに白文字は沈むため紙色文字へ ---------- */
+[data-theme="dark"] .acc-blue .num,[data-theme="dark"] .acc-blue .tag,
+[data-theme="dark"] .acc-red .num,[data-theme="dark"] .acc-red .tag,
+[data-theme="dark"] .acc-green .num,[data-theme="dark"] .acc-green .tag,
+[data-theme="dark"] .acc-purple .num,[data-theme="dark"] .acc-purple .tag,
+[data-theme="dark"] .pill.s1,[data-theme="dark"] .pill.r,[data-theme="dark"] .pill.a,
+[data-theme="dark"] .pill.must,[data-theme="dark"] .asi,
+[data-theme="dark"] .key.act,[data-theme="dark"] .key.exit,
+[data-theme="dark"] .kau .s1 .kanji,[data-theme="dark"] .kau .s3 .kanji,
+[data-theme="dark"] .ptier.t1 .pbox,
+[data-theme="dark"] .pcard.p-a .pk,[data-theme="dark"] .pcard.p-b .pk,
+[data-theme="dark"] .pcard.p-c .pk,[data-theme="dark"] .pcard.p-e .pk,
+[data-theme="dark"] .pitem .pn,[data-theme="dark"] .lk .off{color:var(--paper);}
+
+/* ---------- 黄色地のチップ類: 文字は常に墨 ---------- */
+[data-theme="dark"] .acc-yellow .num,[data-theme="dark"] .acc-yellow .tag,
+[data-theme="dark"] .pill.c,[data-theme="dark"] .pill.s2,[data-theme="dark"] .pill.should,
+[data-theme="dark"] .kau .s2 .kanji,[data-theme="dark"] .pcard.p-d .pk{color:#141414;}
+[data-theme="dark"] .count{color:#141414;border-color:#141414;}
+
+/* ---------- 本文・表・細部の読みやすさ ---------- */
+[data-theme="dark"] td{border-bottom-color:#2c2c29;}
+[data-theme="dark"] tbody tr:hover{background:#232321;}
+[data-theme="dark"] .gc .gd,[data-theme="dark"] .cell .d,
+[data-theme="dark"] .card .cdsc,[data-theme="dark"] .repo .rb{color:#ccc8bd;}
+[data-theme="dark"] .gc .gd code{background:#2a2a27;}
+[data-theme="dark"] .note code{background:#262623;}
+[data-theme="dark"] .pill.i,[data-theme="dark"] .pill.wont{background:#2a2a27;}
+[data-theme="dark"] .foot-note pre{color:#d9d4c7;}
+[data-theme="dark"] .hero .thesis b,[data-theme="dark"] .hero .lead b{background:linear-gradient(transparent 60%,rgba(242,201,76,.32) 60%);}
+
+} /* end @media screen */

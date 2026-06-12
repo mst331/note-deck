@@ -103,7 +103,7 @@
   .cell.c-blue{background:var(--blue-bg);}.cell.c-blue .ttl{color:var(--blue);}
   .cell.c-red{background:var(--red-bg);}.cell.c-red .ttl{color:var(--red);}
   .cell.c-green{background:var(--green-bg);}.cell.c-green .ttl{color:var(--green);}
-  .cell.c-yellow{background:var(--yellow-bg);}.cell.c-yellow .ttl{color:#7a6200;}
+  .cell.c-yellow{background:var(--yellow-bg);}.cell.c-yellow .ttl{color:var(--ydeep,#7a6200);}
 
   .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
   .note.r{border-left-color:var(--red);background:var(--red-bg);}
@@ -132,6 +132,8 @@
   @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
   @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.code,.final,.note,.shead .num,.cell{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
 </style>
+<link rel="stylesheet" href="../assets/swiss-pop-dark.css">
+<script src="../assets/theme.js"></script>
 </head>
 <body>
 <div class="wrap">
