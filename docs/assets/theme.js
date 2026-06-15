@@ -14,8 +14,6 @@
   }
 
   ready(function () {
-    var host = document.querySelector('.meta span:last-child');
-    if (!host) return;
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'themetoggle';
@@ -29,6 +27,6 @@
       label();
     });
     label();
-    host.appendChild(btn);
+    document.body.appendChild(btn);
   });
 })();
