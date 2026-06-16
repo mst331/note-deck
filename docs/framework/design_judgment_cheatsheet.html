@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>設計判断の型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
+    --blue:#1f3df0;--blue-bg:#e6eaff;
+    --red:#fa3b2d;--red-bg:#ffe7e3;
+    --yellow:#ffcb05;--yellow-bg:#fff4cc;
+    --green:#0aa46a;--green-bg:#dff6ec;
+    --purple:#7b3ff2;--purple-bg:#efe7ff;
+    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
+    --body:"Noto Sans JP",system-ui,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
+  .meta .dot{color:var(--red);}
+  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
+  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
+  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+
+  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
+  .hero h1 .hl{color:var(--blue);}
+  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
+  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
+  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:730px;}
+  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
+  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:730px;}
+  .hero .lead a{color:var(--blue);font-weight:700;}
+  .hero .lead em{font-style:normal;font-weight:700;color:var(--ink);}
+
+  .modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin:32px 0;}
+  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  .mode.m1{background:var(--blue-bg);}.mode.m2{background:var(--purple-bg);}.mode.m3{background:var(--green-bg);}
+  .mode.m4{background:var(--red-bg);}.mode.m5{background:var(--yellow-bg);}
+  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;}
+  .mode.m1 .en{color:var(--blue);}.mode.m2 .en{color:var(--purple);}.mode.m3 .en{color:var(--green);}
+  .mode.m4 .en{color:var(--red);}.mode.m5 .en{color:var(--ink);}
+  .mode .jp{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.1;margin:7px 0 8px;}
+  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+  section{padding:34px 0 6px;}
+  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
+  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
+  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
+  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
+  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
+  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
+  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
+
+  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
+  thead{background:var(--ink);color:#fff;}
+  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#fafafa;}
+  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
+
+  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
+  .note.r{border-left-color:var(--red);background:var(--red-bg);}
+  .note b{font-weight:700;}
+  .note a{color:var(--blue);font-weight:700;}
+
+  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
+
+  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  @media (max-width:760px){.modes{grid-template-columns:1fr;}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
+  @media print{body{background:#fff;}.mode,.tbl,.note,.shead .num{box-shadow:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+</style>
+<link rel="stylesheet" href="../assets/swiss-pop-dark.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; DESIGN JUDGMENT / FRAMEWORK</span>
+    <span>設計判断の型 ― CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1><span class="hl">設計判断</span>の型<span class="dot">.</span></h1>
+    <p class="sub">PART 2 ― 人が握る側</p>
+    <p class="thesis"><b>失敗の多くは能力不足でなく、支配軸（その判断で一番重視すべき軸）の取り違え。</b>まず「これは何の判断か」を名指しする。</p>
+    <p class="lead">レビュー・AIへの指示・判断ログで「なんか嫌」を「これは"◯◯"だ」に変えるための共通語彙（札）。どれも<em>禁止</em>ではなく「<b>いつなら許されるか（敢えて選ぶ条件）</b>」がある。A〜C群は人の設計判断、D〜E群はAI時代に急増し、<a href="../ai/ai_review_cheatsheet.html">検収</a>・<a href="../ai/ai_harness_pitfalls_cheatsheet.html">ハーネス</a>シートと地続き。</p>
+    <p class="lead">16パターンの名称・概念: kawasima「Decision Quality と設計判断失敗パターン」を参考に、設計レビュー・AI活用向けに再構成。A〜E群の分類・合言葉は独自整理。</p>
+  </header>
+
+  <!-- 索引カード 5枚 -->
+  <div class="modes rv">
+    <div class="mode m1">
+      <div class="en">A — REUSE FIRST</div>
+      <div class="jp">既存を先に見る</div>
+      <div class="desc">標準・既存部品・既存規約・責務を見てから書く。再発明とバラつきを防ぐ。</div>
+    </div>
+    <div class="mode m2">
+      <div class="en">B — RIGHT-SIZE</div>
+      <div class="jp">身の丈で作る</div>
+      <div class="desc">要件と運用体制に釣り合う規模で作る。将来の拡張は来てから。</div>
+    </div>
+    <div class="mode m3">
+      <div class="en">C — DON'T SHRINK</div>
+      <div class="jp">縮こまらない</div>
+      <div class="desc">組織を低く見て弱い選択を続けない。互換は"誰が使っているか"で判断。</div>
+    </div>
+    <div class="mode m4">
+      <div class="en">D — DON'T SKIP ★AI</div>
+      <div class="jp">確認を飛ばさない</div>
+      <div class="desc">「通った」を「できた」にしない。完了の定義を先に固定する。</div>
+    </div>
+    <div class="mode m5">
+      <div class="en">E — BUILD IN ★危険</div>
+      <div class="jp">後付けできないものは最初から入れる</div>
+      <div class="desc">権限・履歴・監査・冪等性は後付け不可。依存は実在確認。</div>
+    </div>
+  </div>
+
+  <!-- 01 REUSE FIRST -->
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">A</span><h2>REUSE FIRST — 既存を見ていない／バラバラになる</h2></div>
+    <p class="lede">標準・既存部品・規約・責務を確認してから書く。書き始める前の1分が、重複と乖離を防ぐ。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>名前</th><th>一言</th><th>例</th><th>合言葉</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>車輪の再発明</b></td>
+            <td>標準で足りるのに自作</td>
+            <td>標準バリデーションがあるのに各画面で独自実装</td>
+            <td>それ標準で足りない？</td>
+          </tr>
+          <tr>
+            <td><b>隣を見ない再実装</b></td>
+            <td>既存の共通部品を読まず似たものを新規作成</td>
+            <td>日付整形ユーティリティがあるのに <code>formatDate</code>/<code>toDate</code> が増殖</td>
+            <td>同じもの、もう無い？</td>
+          </tr>
+          <tr>
+            <td><b>郷に従わぬ正論</b></td>
+            <td>既存規約を無視して"正しさ"を新規分だけ持ち込む</td>
+            <td>既存はService層トランザクションなのに新規だけController処理</td>
+            <td>周りのコードに合わせた？</td>
+          </tr>
+          <tr>
+            <td><b>越境実装</b></td>
+            <td>担当の責務を越えて書く</td>
+            <td>上限判定をドメイン層でなく画面側(View)に書く</td>
+            <td>それ、ここで判定する話？</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>許容条件：</b>既存が明確に劣化している／規約自体を更新する合意がある時は、新規側で正しさを入れてよい。</div>
+  </section>
+
+  <!-- 02 RIGHT-SIZE -->
+  <section class="acc-purple rv">
+    <div class="shead"><span class="num">B</span><h2>RIGHT-SIZE — 作りすぎ／規模・将来を読み違える</h2></div>
+    <p class="lede">要件と運用体制に釣り合う規模で作る。変化点は観測されてから、拡張は担当と時期が決まってから。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>名前</th><th>一言</th><th>例</th><th>合言葉</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>牛刀をもって鶏を割く</b></td>
+            <td>小さい要件に大げさな構成</td>
+            <td>1ページのLP改修に汎用基盤を持ち出す</td>
+            <td>規模に釣り合ってる？</td>
+          </tr>
+          <tr>
+            <td><b>早すぎる抽象化</b></td>
+            <td>変化点が見える前に汎用化</td>
+            <td>1種類しかないのに汎用フォームレンダラ</td>
+            <td>2回以上同じの出た？</td>
+          </tr>
+          <tr>
+            <td><b>取らぬ狸の拡張点</b></td>
+            <td>"将来やるかも"だけで拡張点を作る</td>
+            <td>「将来SMSも送るかも」で汎用通知基盤</td>
+            <td>時期と担当、決まってる？</td>
+          </tr>
+          <tr>
+            <td><b>身の丈に合わない設計</b></td>
+            <td>技術は正しいが運用できる人がいない</td>
+            <td>運用体制が無いのに重いインフラ／回せない量の運用ルール</td>
+            <td>うちで運用できる？</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>許容条件：</b>変化点が2回以上実際に出た／規模・運用体制が追いついている時だけ。</div>
+  </section>
+
+  <!-- 03 DON'T SHRINK -->
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">C</span><h2>DON'T SHRINK — 縮こまりすぎ／成長機会を潰す</h2></div>
+    <p class="lede">組織のスキルを実態より低く見積もらない。互換の実利用者を確認せず最大限保守的に振る舞わない。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>名前</th><th>一言</th><th>例</th><th>合言葉</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>羹に懲りて膾を吹く</b></td>
+            <td>組織を低く見て弱い選択を続ける</td>
+            <td>「保守できる人いない」でずっと旧いまま</td>
+            <td>"保守できない"が言い訳になってない？</td>
+          </tr>
+          <tr>
+            <td><b>過去への忖度</b></td>
+            <td>互換の実利用者を確認せず最大限保守的に</td>
+            <td>使われていない旧仕様のため新旧並走で複雑化</td>
+            <td>それ、誰がまだ使ってる？</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>許容条件：</b>実利用者・移行コストを確認した上で、なお守る価値があると判断できた時。</div>
+  </section>
+
+  <!-- 04 DON'T SKIP -->
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">D</span><h2>DON'T SKIP — 確認を飛ばす</h2></div>
+    <p class="lede">「通った」を「できた」にしない。完了条件を入力・状態・期待結果に割ってから着手する。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>名前</th><th>一言</th><th>例</th><th>合言葉</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>早合点</b></td>
+            <td>"通った"を"できた"と勘違い</td>
+            <td>送信が200で「成功」、実は連携先で未受理／バッチ完走で対象0件</td>
+            <td>コマンドが通っただけでは？</td>
+          </tr>
+          <tr>
+            <td><b>見切り発車</b></td>
+            <td>仕様・受入基準が曖昧なまま実装</td>
+            <td>業務ルール未定なのにバリデーションだけ先に作る</td>
+            <td>完了の定義、決まってる？</td>
+          </tr>
+          <tr>
+            <td><b>名ばかりの完了</b></td>
+            <td>完了条件が判定不能</td>
+            <td>「正しく表示」「現行と同等」だけ＝測れない</td>
+            <td>入力・状態・期待結果に割れてる？</td>
+          </tr>
+          <tr>
+            <td><b>場当たり対応</b></td>
+            <td>短期で動かすため整合を壊す</td>
+            <td>エラーを握りつぶして画面だけ進める／テスト期待値を実装に寄せる</td>
+            <td>一次対応？なら戻し条件と恒久チケット残した？</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note r"><b>詳細はリンク先（再説明しない）：</b>早合点・名ばかりの完了 → <a href="../ai/ai_review_cheatsheet.html">AI出力の検収</a>（受け入れ基準・流暢さ≠正しさ）｜早合点 → <a href="../ai/ai_harness_pitfalls_cheatsheet.html">ハーネスの落とし穴</a>（CI通過≠完了）｜場当たり対応 → <a href="./retrospective_cheatsheet.html">振り返りの型</a>（恒久対策）・<a href="../ai/ai_harness_pitfalls_cheatsheet.html">ハーネス</a>（rollback／撤退ライン）。</div>
+  </section>
+
+  <!-- 05 BUILD IN -->
+  <section class="acc-ink rv">
+    <div class="shead"><span class="num">E</span><h2>BUILD IN — 最初から入れるべきものを抜く</h2></div>
+    <p class="lede">権限・履歴・監査・冪等性・状態遷移は後付け不可。依存は一次資料で実在確認してから使う。</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>名前</th><th>一言</th><th>例</th><th>合言葉</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>制約の後付け</b></td>
+            <td>権限・履歴・監査・冪等性・状態遷移を後回し</td>
+            <td>CRUDを作ってから権限／更新を作ってから監査ログ。フォーム・連携・決済・個人情報で致命的</td>
+            <td>制約は後付け不可。最初から入った？</td>
+          </tr>
+          <tr>
+            <td><b>砂上の依存</b></td>
+            <td>存在しないライブラリ・関数・引数を使う</td>
+            <td>AIが実在しないパッケージ/引数を生成（slopsquatting）</td>
+            <td>そのAPI、本当に在る？一次資料で確認した？</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>詳細はリンク先（再説明しない）：</b>制約の後付け → <a href="../ai/ai_harness_pitfalls_cheatsheet.html">ハーネスの落とし穴</a>（権限・ログを最初から）｜砂上の依存 → <a href="../ai/ai_review_cheatsheet.html">AI出力の検収</a>（存在しないAPIのレッドフラグ）・<a href="../ai/ai_harness_pitfalls_cheatsheet.html">ハーネス</a>（OWASP ASI04 供給網汚染）。</div>
+  </section>
+
+  <!-- つながり -->
+  <div class="note rv" style="margin-top:40px;border-left-color:var(--ink);">
+    <b>つながり：</b>任せる前の整理 → <a href="./requirements_cheatsheet.html">要件定義の型</a>（見切り発車の受け入れ条件）
+    ｜ 確認 → <a href="../ai/ai_review_cheatsheet.html">AI出力の検収</a>
+    ｜ 安全に動かす → <a href="../ai/ai_harness_pitfalls_cheatsheet.html">ハーネスの落とし穴</a>
+    ｜ 事故後 → <a href="./retrospective_cheatsheet.html">振り返りの型</a>
+  </div>
+
+  <footer>設計判断の型 ― framework series — unofficial — Created: 2026-06-15 / Revised: 2026-06-16 · Ref: <a href="https://scrapbox.io/kawasima/Decision_Quality_%E3%81%A8%E8%A8%AD%E8%A8%88%E5%88%A4%E6%96%AD%E5%A4%B1%E6%95%97%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3" target="_blank" rel="noopener">kawasima「Decision Quality と設計判断失敗パターン」</a> · <a href="../index.html">↑ index</a></footer>
+
+</div>
+</body>
+</html>
