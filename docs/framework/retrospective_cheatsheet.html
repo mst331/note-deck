@@ -7,121 +7,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/swiss-pop-deck.css">
 <style>
-  :root{
-    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
-    --blue:#1f3df0;--blue-bg:#e6eaff;
-    --red:#fa3b2d;--red-bg:#ffe7e3;
-    --yellow:#ffcb05;--yellow-bg:#fff4cc;
-    --green:#0aa46a;--green-bg:#dff6ec;
-    --purple:#7b3ff2;--purple-bg:#efe7ff;
-    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
-    --body:"Noto Sans JP",system-ui,sans-serif;
-    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{-webkit-text-size-adjust:100%;}
-  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
-  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
-
-  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
-  .meta .dot{color:var(--red);}
-  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
-  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
-  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
-  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
-
-  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
-  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
-  .hero h1 .hl{color:var(--blue);}
-  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
-  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
-  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:730px;}
-  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
-  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:730px;}
-
-  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
-  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  /* ▼ シート固有のみ（標準部品は swiss-pop-deck.css に集約済み） */
+  /* mode パネル配色（赤/緑/紫） */
   .mode.m1{background:var(--red-bg);}.mode.m2{background:var(--green-bg);}.mode.m3{background:var(--purple-bg);}
-  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.14em;}
   .mode.m1 .en{color:var(--red);}.mode.m2 .en{color:var(--green);}.mode.m3 .en{color:var(--purple);}
-  .mode .jp{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.15;margin:7px 0 8px;}
-  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
-
-  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
-  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
-  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
-  .tok{font-family:var(--mono);font-weight:700;font-size:12px;padding:6px 10px;border:2px solid #fff;color:#fff;}
-  .tok.r{border-color:var(--red);color:#ff9b92;}.tok.b{border-color:var(--blue);color:#9fb0ff;}.tok.p{border-color:var(--purple);color:#c9a4ff;}.tok.g{border-color:var(--green);color:#6fe3b6;}.tok.y{border-color:var(--yellow);color:var(--yellow);}
-  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
-
-  section{padding:50px 0 6px;}
-  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
-  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
-  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
-  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
-  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
-  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
-  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
-
-  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
-  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
-  thead{background:var(--ink);color:#fff;}
-  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
-  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr:hover{background:#fafafa;}
-  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
-  .pill{font-family:var(--mono);font-weight:700;font-size:11px;padding:2px 8px;border:2px solid var(--ink);white-space:nowrap;display:inline-block;}
+  /* pill 段階（s1/s2/s3） */
   .pill.s1{background:var(--red);color:#fff;border-color:var(--red);}
   .pill.s2{background:var(--yellow);}
   .pill.s3{background:var(--green-bg);}
-
-  .code{border:2px solid var(--ink);background:#16181d;color:#e9eef5;box-shadow:5px 5px 0 var(--ink);position:relative;
-    font-family:var(--mono);font-size:12.5px;line-height:1.9;padding:32px 17px 15px;margin:12px 0 16px;overflow-x:auto;white-space:pre-wrap;}
-  .code .k{color:#7fd6ff;font-weight:700;}.code .v{color:#ffd84d;}.code .c{color:#7c8597;}.code .e{color:#9fe6b8;}
-  .copybtn{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
-    padding:3px 9px;border:2px solid #3a3f4a;background:#23262e;color:#cfd6e0;cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s;}
-  .copybtn:hover{background:#e9eef5;color:#16181d;border-color:#e9eef5;}
-  .copybtn.done{background:var(--green);color:#fff;border-color:var(--green);}
-
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:12px 0 14px;}
-  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
-  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:4px;}
-  .gc .gd{font-size:12.5px;color:#333;line-height:1.6;}
-  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
-
-  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
-  .note.r{border-left-color:var(--red);background:var(--red-bg);}
-  .note.g{border-left-color:var(--green);background:var(--green-bg);}
-  .note b{font-weight:700;}.note code{font-family:var(--mono);font-weight:700;background:#fff;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
-
-  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
-  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
-  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  /* code 構文（v=値 e=強調） */
+  .code .k{color:#7fd6ff;font-weight:700;}.code .v{color:#ffd84d;}.code .e{color:#9fe6b8;}
+  /* final チェックリスト */
   .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;}
   .chk{border:2px solid #444;padding:11px 13px;font-size:13px;line-height:1.5;}
   .chk b{color:var(--yellow);}
-  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
-  .final .conc b{color:var(--yellow);}
-
+  /* 相互参照リンク */
   a.xref{color:var(--blue);font-weight:700;text-decoration:underline;text-decoration-color:rgba(31,61,240,.4);text-underline-offset:2px;}
   a.xref:hover{text-decoration-color:var(--blue);}
   .final a.xref{color:#ffd84d;text-decoration-color:rgba(255,216,77,.5);}
-  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
-
-  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
-  @keyframes rise{to{opacity:1;transform:none;}}
-  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
-
-  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}}
-  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
-  @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.code,.final,.note,.shead .num{box-shadow:none;}.copybtn{display:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
 </style>
 <link rel="stylesheet" href="../assets/swiss-pop-dark.css">
 <script src="../assets/theme.js"></script>

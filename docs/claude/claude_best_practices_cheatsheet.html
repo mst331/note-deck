@@ -7,79 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/swiss-pop-deck.css">
 <style>
-  :root{
-    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
-    --blue:#1f3df0;--blue-bg:#e6eaff;
-    --red:#fa3b2d;--red-bg:#ffe7e3;
-    --yellow:#ffcb05;--yellow-bg:#fff4cc;
-    --green:#0aa46a;--green-bg:#dff6ec;
-    --purple:#7b3ff2;--purple-bg:#efe7ff;
-    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
-    --body:"Noto Sans JP",system-ui,sans-serif;
-    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{-webkit-text-size-adjust:100%;}
-  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
-  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
-
-  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
-  .meta .dot{color:var(--red);}
-  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
-  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
-  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
-  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
-
-  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
-  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
-  .hero h1 .hl{color:var(--blue);}
-  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
-  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.2em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
-  .hero .thesis{font-size:clamp(15px,2.1vw,19px);font-weight:700;line-height:1.6;margin-top:16px;max-width:720px;}
-  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
-  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:720px;}
-
-  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
-  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
-  .mode.m1{background:var(--green-bg);}
-  .mode.m2{background:var(--blue-bg);}
-  .mode.m3{background:var(--yellow-bg);}
-  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.16em;}
-  .mode.m1 .en{color:var(--green);}
-  .mode.m2 .en{color:var(--blue);}
-  .mode.m3 .en{color:var(--ydeep,#7a6200);}
-  .mode .jp{font-family:var(--disp);font-weight:900;font-size:21px;line-height:1.15;margin:7px 0 8px;}
-  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
-
-  .flow{border:2px solid var(--ink);background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--yellow);padding:18px 20px;margin:32px 0 8px;}
-  .flow .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:12px;}
-  .seq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
-  .tok{font-family:var(--mono);font-weight:700;font-size:13px;padding:6px 11px;border:2px solid #fff;color:#fff;}
-  .tok.g{border-color:var(--green);color:#6fe3b6;}
-  .tok.b{border-color:var(--blue);color:#9fb0ff;}
-  .tok.y{border-color:var(--yellow);color:var(--yellow);}
-  .arr{font-family:var(--mono);color:#8f8f8f;font-weight:700;}
-
-  section{padding:50px 0 6px;}
-  .shead{display:flex;align-items:center;gap:14px;margin-bottom:20px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
-  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
-  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
-  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.13em;padding:5px 10px;border:2px solid var(--ink);}
-  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}
-  .acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}
-  .acc-green .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}
-  .acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}
-  .acc-red .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
-  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
-  .lede{font-size:14px;color:var(--muted);margin:-6px 0 18px;max-width:730px;}
-
-  /* PRIORITY LIST */
+  /* ▼ シート固有のみ（標準部品は swiss-pop-deck.css に集約済み） */
+  /* mode 配色（緑/青/黄） */
+  .mode.m1{background:var(--green-bg);}.mode.m2{background:var(--blue-bg);}.mode.m3{background:var(--yellow-bg);}
+  .mode.m1 .en{color:var(--green);}.mode.m2 .en{color:var(--blue);}.mode.m3 .en{color:#7a6200;}
+  /* 優先リスト */
   .plist{display:flex;flex-direction:column;gap:10px;margin:12px 0 14px;}
   .pitem{display:flex;gap:13px;border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:12px 14px;align-items:flex-start;}
   .pitem .pn{font-family:var(--mono);font-weight:700;font-size:13px;background:var(--blue);color:#fff;border:2px solid var(--blue);padding:3px 9px;flex-shrink:0;}
@@ -87,33 +21,14 @@
   .pitem .pt{font-weight:700;font-size:14px;}
   .pitem .pd{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:2px;}
   .pitem .pd code{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
-
-  /* CARD GRID */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:12px 0 14px;}
-  .gc{border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:13px 15px;}
-  .gc .gt{font-weight:700;font-size:13.5px;margin-bottom:5px;display:flex;align-items:center;gap:8px;}
+  /* カードタイトル内バッジ */
+  .gc .gt{display:flex;align-items:center;gap:8px;}
   .gc .gt .b{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border:2px solid var(--ink);}
   .acc-red .gc .gt .b{background:var(--red-bg);}
   .acc-yellow .gc .gt .b{background:var(--yellow-bg);}
-  .gc .gd{font-size:12.5px;color:#333;line-height:1.65;}
-  .gc .gd code{font-family:var(--mono);font-weight:700;background:#f0f0f0;padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;white-space:nowrap;}
-
-  /* TABLE */
-  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
-  table{width:100%;border-collapse:collapse;background:var(--card);font-size:13px;}
-  thead{background:var(--ink);color:#fff;}
-  th{padding:10px 13px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11.5px;letter-spacing:.04em;white-space:nowrap;}
-  td{padding:10px 13px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr:hover{background:#fafafa;}
-  td .pill{font-family:var(--mono);font-weight:700;font-size:11.5px;padding:2px 8px;border:2px solid var(--ink);white-space:nowrap;display:inline-block;}
-  .pill.op{background:var(--purple-bg);} .pill.so{background:var(--blue-bg);} .pill.ha{background:var(--green-bg);}
-
-  /* NOTE */
-  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:16px 0;font-size:13px;line-height:1.7;}
-  .note b{font-weight:700;}
-
-  /* LINKS */
+  /* 表内ピル（採用/出典/ハルシ） */
+  .pill.op{background:var(--purple-bg);}.pill.so{background:var(--blue-bg);}.pill.ha{background:var(--green-bg);}
+  /* リンクカード */
   .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:12px 0;}
   .lk{position:relative;border:2px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--ink);padding:12px 14px;}
   .lk a{display:block;padding-right:66px;font-family:var(--mono);font-weight:700;font-size:13px;color:var(--blue);text-decoration:underline;text-decoration-color:rgba(31,61,240,.4);text-underline-offset:2px;word-break:break-word;}
@@ -121,28 +36,15 @@
   .lk .ld{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.55;}
   .lk .off{position:absolute;top:12px;right:14px;white-space:nowrap;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.08em;color:#fff;background:var(--green);padding:1px 6px;border:1px solid var(--ink);}
   .lk .com{background:var(--muted);}
-
-  /* FINAL */
-  .final{border:3px solid var(--ink);background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--yellow);padding:28px 26px;margin-top:54px;}
-  .final .ft{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;margin-bottom:6px;}
-  .final .fs{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbd;margin-bottom:18px;}
+  /* final ルールグリッド */
   .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
   .rule{border:2px solid #444;padding:12px 13px;}
   .rule .rk{font-family:var(--mono);font-weight:700;font-size:22px;color:var(--yellow);}
   .rule .rt{font-size:13px;font-weight:700;margin-top:4px;}
   .rule .rd{font-size:11.5px;color:#bdbdbd;margin-top:2px;line-height:1.5;}
-  .final .conc{margin-top:20px;padding-top:16px;border-top:1px solid #333;font-size:14px;}
-  .final .conc b{color:var(--yellow);}
-
-  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
-
-  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
-  @keyframes rise{to{opacity:1;transform:none;}}
-  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
-
-  @media (max-width:760px){.modes{grid-template-columns:1fr;}.grid,.links{grid-template-columns:1fr;}}
-  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
-  @media print{body{background:#fff;}.mode,.flow,.tbl,.gc,.pitem,.lk,.final,.note,.shead .num{box-shadow:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
+  /* シート固有メディア断片 */
+  @media (max-width:760px){.links{grid-template-columns:1fr;}}
+  @media print{.pitem,.lk{box-shadow:none;}}
 </style>
 <link rel="stylesheet" href="../assets/swiss-pop-dark.css">
 <script src="../assets/theme.js"></script>

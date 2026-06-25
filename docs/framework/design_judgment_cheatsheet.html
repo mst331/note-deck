@@ -7,88 +7,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/swiss-pop-deck.css">
 <style>
-  :root{
-    --ink:#141414;--paper:#ffffff;--card:#ffffff;--line:#141414;--muted:#5b5b54;
-    --blue:#1f3df0;--blue-bg:#e6eaff;
-    --red:#fa3b2d;--red-bg:#ffe7e3;
-    --yellow:#ffcb05;--yellow-bg:#fff4cc;
-    --green:#0aa46a;--green-bg:#dff6ec;
-    --purple:#7b3ff2;--purple-bg:#efe7ff;
-    --disp:"Archivo","Noto Sans JP",system-ui,sans-serif;
-    --body:"Noto Sans JP",system-ui,sans-serif;
-    --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{-webkit-text-size-adjust:100%;}
-  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:15px;}
-  .wrap{max-width:1000px;margin:0 auto;padding:0 22px 96px;}
-
-  .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:18px 0 0;color:var(--muted);}
-  .meta .dot{color:var(--red);}
-  .meta a.back{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 9px;text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s;}
-  .meta a.back:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
-  footer a{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:2px 8px;text-decoration:none;white-space:nowrap;display:inline-block;transition:transform .12s,box-shadow .12s;}
-  footer a:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
-
-  .hero{padding:46px 0 30px;border-bottom:3px solid var(--ink);}
-  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.5vw,46px);line-height:1;letter-spacing:-.03em;}
-  .hero h1 .hl{color:var(--blue);}
-  .hero h1 .dot{color:var(--yellow);-webkit-text-stroke:2px var(--ink);}
-  .hero .sub{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;margin-top:16px;color:var(--muted);}
-  .hero .thesis{font-size:clamp(15px,2.1vw,18px);font-weight:700;line-height:1.6;margin-top:16px;max-width:730px;}
-  .hero .thesis b{background:linear-gradient(transparent 60%,var(--yellow) 60%);}
-  .hero .lead{font-size:14px;color:var(--muted);margin-top:10px;max-width:730px;}
-  .hero .lead a{color:var(--blue);font-weight:700;}
-  .hero .lead em{font-style:normal;font-weight:700;color:var(--ink);}
-
-  .modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin:32px 0;}
-  .mode{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:18px;}
+  /* ▼ シート固有のみ（標準部品は swiss-pop-deck.css に集約済み） */
+  /* index カード: 5枚を auto-fill 配置＋配色（青/紫/緑/赤/黄） */
+  .modes{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));}
   .mode.m1{background:var(--blue-bg);}.mode.m2{background:var(--purple-bg);}.mode.m3{background:var(--green-bg);}
   .mode.m4{background:var(--red-bg);}.mode.m5{background:var(--yellow-bg);}
-  .mode .en{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;}
   .mode.m1 .en{color:var(--blue);}.mode.m2 .en{color:var(--purple);}.mode.m3 .en{color:var(--green);}
   .mode.m4 .en{color:var(--red);}.mode.m5 .en{color:var(--ink);}
-  .mode .jp{font-family:var(--disp);font-weight:900;font-size:20px;line-height:1.1;margin:7px 0 8px;}
-  .mode .desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
-
-  section{padding:34px 0 6px;}
-  .shead{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid var(--ink);padding-bottom:13px;flex-wrap:wrap;}
-  .shead .num{font-family:var(--disp);font-weight:900;font-size:18px;line-height:1;border:2px solid var(--ink);padding:5px 9px;box-shadow:3px 3px 0 var(--ink);}
-  .shead h2{font-family:var(--disp);font-weight:900;font-size:clamp(17px,2.4vw,21px);letter-spacing:-.02em;flex:1;min-width:180px;}
-  .shead .tag{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;padding:5px 10px;border:2px solid var(--ink);}
-  .acc-blue .num,.acc-blue .tag{background:var(--blue);color:#fff;border-color:var(--blue);}.acc-blue .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-red .num,.acc-red .tag{background:var(--red);color:#fff;border-color:var(--red);}.acc-red .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-green .num,.acc-green .tag{background:var(--green);color:#fff;border-color:var(--green);}.acc-green .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-purple .num,.acc-purple .tag{background:var(--purple);color:#fff;border-color:var(--purple);}.acc-purple .num{box-shadow:3px 3px 0 var(--ink);}
-  .acc-yellow .num,.acc-yellow .tag{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
-  .acc-ink .num,.acc-ink .tag{background:var(--ink);color:#fff;}
-  .lede{font-size:14px;color:var(--muted);margin:-4px 0 16px;max-width:740px;}
-
-  .tbl{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:14px 0 18px;overflow-x:auto;}
-  table{width:100%;border-collapse:collapse;background:var(--card);font-size:12.5px;}
-  thead{background:var(--ink);color:#fff;}
-  th{padding:10px 12px;text-align:left;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.03em;white-space:nowrap;}
-  td{padding:9px 12px;border-bottom:1px solid #ececec;vertical-align:top;line-height:1.6;}
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr:hover{background:#fafafa;}
-  td code,.icode{font-family:var(--mono);font-weight:700;background:var(--blue-bg);padding:1px 5px;border:1px solid var(--ink);font-size:11.5px;}
-
-  .note{border:2px solid var(--ink);border-left:8px solid var(--yellow);background:var(--yellow-bg);padding:13px 16px;margin:14px 0;font-size:13px;line-height:1.72;}
-  .note.r{border-left-color:var(--red);background:var(--red-bg);}
-  .note b{font-weight:700;}
+  /* hero lead 内のリンク/強調 */
+  .hero .lead a{color:var(--blue);font-weight:700;}
+  .hero .lead em{font-style:normal;font-weight:700;color:var(--ink);}
+  /* note 内リンク */
   .note a{color:var(--blue);font-weight:700;}
-
-  footer{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-align:center;text-transform:uppercase;}
-
-  .rv{opacity:0;transform:translateY(16px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards;}
-  @keyframes rise{to{opacity:1;transform:none;}}
-  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
-
-  @media (max-width:760px){.modes{grid-template-columns:1fr;}}
-  @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
-  @media print{body{background:#fff;}.mode,.tbl,.note,.shead .num{box-shadow:none;}.rv{animation:none;opacity:1;transform:none;}section{page-break-inside:avoid;}}
 </style>
 <link rel="stylesheet" href="../assets/swiss-pop-dark.css">
 <script src="../assets/theme.js"></script>
