@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AIとチャットで業務を進めるときの、曖昧な依頼・質問返し・途中停止・完了誤認・断片報告・判断境界を整える6つの短い追加指示。">
+<title>AIと仕事を進める6つの指示 | Note Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/swiss-pop-deck.css">
+<style>
+  .patterns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+  .pattern{border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:16px 17px;background:var(--card,#fff);}
+  .pattern .kicker{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--muted);}
+  .pattern h3{font-family:var(--disp);font-size:18px;font-weight:900;line-height:1.3;margin:5px 0 10px;}
+  .pattern .prompt{font-size:13px;line-height:1.75;background:var(--blue-bg);border-left:5px solid var(--blue);padding:11px 12px;}
+  .pattern:nth-child(2) .prompt{background:var(--yellow-bg);border-left-color:var(--yellow);}
+  .pattern:nth-child(3) .prompt{background:var(--green-bg);border-left-color:var(--green);}
+  .pattern:nth-child(4) .prompt{background:var(--red-bg);border-left-color:var(--red);}
+  .pattern:nth-child(5) .prompt{background:var(--purple-bg);border-left-color:var(--purple);}
+  .pattern:nth-child(6) .prompt{background:var(--yellow-bg);border-left-color:var(--ink);}
+  .mini{font-size:12.5px;line-height:1.7;color:#333;margin-top:9px;}
+  .formula{font-family:var(--mono);font-size:13px;line-height:1.8;border:2px solid var(--ink);background:var(--yellow-bg);padding:14px 16px;margin-top:12px;}
+  .use{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+  .use div{border:2px solid var(--ink);padding:12px 13px;font-size:12.5px;line-height:1.6;}
+  .use b{display:block;font-family:var(--disp);font-size:14px;margin-bottom:4px;}
+  @media(max-width:760px){.patterns,.use{grid-template-columns:1fr;}}
+  @media print{.pattern{box-shadow:none;}}
+</style>
+<link rel="stylesheet" href="../assets/swiss-pop-dark.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta rv">
+    <span><a class="back" href="../index.html">← INDEX</a>&nbsp;&nbsp;<span class="dot">●</span>&nbsp; AI WORK / EXECUTION</span>
+    <span>6 SHORT INSTRUCTIONS — CHEAT SHEET</span>
+  </div>
+
+  <header class="hero rv">
+    <h1>AIと<span class="hl">仕事を進める</span><span class="dot">.</span></h1>
+    <p class="sub">曖昧でも止まらない。勝手にも進まない。</p>
+    <p class="thesis"><b>調べてから聞く。考えてから返す。進めてから止まる。確認してから完了と言う。</b></p>
+    <p class="lead">チャット形式でAIと業務を進めると、曖昧な依頼、質問返し、途中停止、未確認の完了報告、判断材料不足が起きやすい。長い運用ルールを書く前に、困り方に合わせて短い追加指示を差し込む。</p>
+  </header>
+
+  <section class="acc-blue rv">
+    <div class="shead"><span class="num">01</span><h2>よくある6パターン</h2><span class="tag">PATTERNS</span></div>
+    <p class="lede">全部を毎回入れなくていい。<b>いま困っている挙動に近いものを1〜2個足す</b>。</p>
+
+    <div class="patterns">
+      <article class="pattern">
+        <div class="kicker">AMBIGUOUS REQUEST</div>
+        <h3>指示・要件が曖昧</h3>
+        <div class="prompt">依頼が曖昧でも、会話や既存情報から目的・前提・完了条件を推定し、合理的な仮定を置いて進めてください。<br>推定では進められない重要な判断だけ、人間に確認してください。</div>
+      </article>
+
+      <article class="pattern">
+        <div class="kicker">QUESTION LOOP</div>
+        <h3>AIがすぐ人に質問を返す</h3>
+        <div class="prompt">質問する前に、自分で調査・確認・比較・検討できることを完了し、可能なら推奨案まで作ってください。<br>人間には、調査しても解消できない判断や権限・リスクに関する事項だけを返してください。</div>
+      </article>
+
+      <article class="pattern">
+        <div class="kicker">STOPS TOO EARLY</div>
+        <h3>途中で止まる・ゴールまで進まない</h3>
+        <div class="prompt">調査・説明・計画を作ること自体を完了とせず、実行可能な次の工程があればゴールまで継続してください。<br>安全に進められなくなった時だけ、止まった理由と再開に必要な条件を示してください。</div>
+      </article>
+
+      <article class="pattern">
+        <div class="kicker">FALSE COMPLETION</div>
+        <h3>やっていないのに完了報告する</h3>
+        <div class="prompt">生成・依頼・実行・確認・反映を区別し、実際に確認できていないことを「完了」「対応済み」と報告しないでください。<br>完了を報告する前に、要求された成果と完了条件を満たした証拠を確認してください。</div>
+      </article>
+
+      <article class="pattern">
+        <div class="kicker">FRAGMENTED REPORT</div>
+        <h3>報告が断片的で判断できない</h3>
+        <div class="prompt">人へ判断を求める場合は、事実・未確認事項・選択肢・影響・推奨案を整理し、何を判断すればよいか明確にしてください。<br>人間がもう一度調査し直さないと判断できない状態で、単に「どうしますか」と返さないでください。</div>
+      </article>
+
+      <article class="pattern">
+        <div class="kicker">AUTONOMY BOUNDARY</div>
+        <h3>勝手に進める／何でも聞く</h3>
+        <div class="prompt">可逆で低リスクな実務判断はAI側で進め、不可逆・高影響・権限・リスク受容に関わる判断だけ人間に確認してください。<br>「迷ったら全部聞く」でも「全部勝手に進める」でもなく、判断の影響度で境界を決めてください。</div>
+      </article>
+    </div>
+  </section>
+
+  <section class="acc-green rv">
+    <div class="shead"><span class="num">02</span><h2>まとめて入れるなら</h2><span class="tag">MINIMUM SET</span></div>
+    <p class="lede">長文の運用規約ではなく、まずはこの短い原則でも効く。</p>
+    <div class="formula">調べてから聞く。考えてから返す。進めてから止まる。確認してから完了と言う。<br>低リスクな判断は自分で進め、人にしか決められないことだけ、判断できる材料を揃えて確認してください。</div>
+  </section>
+
+  <section class="acc-red rv">
+    <div class="shead"><span class="num">03</span><h2>どこに入れる?</h2><span class="tag">USE</span></div>
+    <p class="lede">一度きりの依頼より、<b>繰り返し同じ失敗が起きる場所</b>へ置くと効く。</p>
+    <div class="use">
+      <div><b>チャットの追加指示</b>その場で起きている困り方に対応する1〜2項目だけ追加。</div>
+      <div><b>プロジェクト共通指示</b>毎回同じ進め方を求めるなら、プロジェクトの恒常ルールへ。</div>
+      <div><b>Agent / Workflow</b>実行・確認・人間判断の境界が固定化できたら、プロンプトだけでなく処理フローへ。</div>
+    </div>
+    <div class="note r"><b>注意：</b>「質問しないで」「勝手に進めて」だけでは危険。質問前の調査と、人間に戻す条件をセットで決める。</div>
+  </section>
+
+  <div class="final rv">
+    <div class="ft">THE POINT</div>
+    <div class="big">人に返すのは、<br><span>未完成の思考ではなく、判断。</span></div>
+    <p>AIが自分で減らせる不確実性はAIが減らす。人は、目的・責任・高影響な判断に集中する。</p>
+  </div>
+
+  <footer class="rv" style="margin-top:28px;font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;letter-spacing:.08em;">
+    NOTE DECK / AI WORK EXECUTION — 改訂 2026-09-16
+  </footer>
+</div>
+</body>
+</html>
