@@ -15,6 +15,22 @@ GitHub Pages で公開することを想定しています。
 | `docs/ai/` | AIに任せる線引き / AI出力のレビュー・検収 / AIハーネスの落とし穴と最小構成 |
 | `docs/framework/` | 思考の型 / 要件定義の型 / プロジェクト計画の型 / 振り返り・障害対応の型 |
 
+## このリポジトリの役割
+
+この repository は **公開・配信用の Published Output** です。
+
+制作途中のDraft、非公開メモ、レビュー記録、公開判断などは別のprivateな制作領域で管理し、公開可能と判断した成果物だけをこのrepositoryへ反映します。
+
+```text
+private authoring / review
+        ↓ publish
+this public repository
+        ↓
+GitHub Pages
+```
+
+そのため、通常のコンテンツ編集はこのrepositoryだけを起点にせず、ここでは「公開予定の内容が正しく投影されているか」を確認します。
+
 ## 公開構成
 
 - 公開元: `main` ブランチ `/docs`
